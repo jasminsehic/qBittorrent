@@ -173,10 +173,11 @@ PeerAddress PeerInfo::address() const
         return {};
 
     // fast path for platforms which boost.asio internal struct maps to `sockaddr`
-    return {QHostAddress(m_nativeInfo.ip.data()), m_nativeInfo.ip.port()};
-    // slow path for the others
-    //return {QHostAddress(QString::fromStdString(m_nativeInfo.ip.address().to_string()))
-    //    , m_nativeInfo.ip.port()};
+#if defined(QBT_USES_LIBTORRENT21)
+    return {QHostAddress(m_nativeInfo.remote_endpoint().data()), m_nativeInfo.remote_endpoint().port()};
+#else
+    return {QHostAddress(m_nativeInfo.ip.data()), m_nativeInfo.ip.port()}
+#endif
 }
 
 QString PeerInfo::I2PAddress() const
