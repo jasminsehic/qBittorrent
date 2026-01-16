@@ -110,3 +110,7 @@ endif()
 if (LibtorrentRasterbar_VERSION VERSION_GREATER_EQUAL ${minLibtorrentVersion})
     target_compile_definitions(qbt_common_cfg INTERFACE QBT_USES_LIBTORRENT2)
 endif()
+
+if (LibtorrentRasterbar_VERSION VERSION_GREATER_EQUAL 2.1)
+    target_compile_definitions(qbt_common_cfg INTERFACE QBT_USES_LIBTORRENT21)
+endif()
