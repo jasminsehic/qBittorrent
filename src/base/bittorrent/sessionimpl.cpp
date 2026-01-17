@@ -57,6 +57,7 @@
 #include <libtorrent/session_stats.hpp>
 #include <libtorrent/session_status.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <libtorrent/hex.hpp> // to_hex
 
 #include <QDateTime>
 #include <QDeadlineTimer>
@@ -6091,8 +6092,31 @@ void SessionImpl::handlePortmapAlert(const lt::portmap_alert *alert)
     LogMsg(tr("UPnP/NAT-PMP port mapping succeeded. Message: \"%1\"").arg(QString::fromStdString(alert->message())), Log::INFO);
 }
 
+#ifdef QBT_USES_LIBTORRENT21
+static QString peerEndpointToString(const lt::peer_alert &alert)
+{
+    if (auto ip = std::get_if<lt::peer_alert::ip_endpoint>(&alert.ep))
+    {
+        return toString(ip->address());
+    }
+    else if (auto i2p = std::get_if<lt::peer_alert::i2p_endpoint>(&alert.ep))
+    {
+        return QString::fromStdString(lt::aux::to_hex(*i2p));
+    }
+    return {};
+}
+#endif
+
 void SessionImpl::handlePeerBlockedAlert(const lt::peer_blocked_alert *alert)
 {
+    QString port;
+#ifdef QBT_USES_LIBTORRENT21
+    if (auto ip = std::get_if<lt::peer_alert::ip_endpoint>(&alert->ep))
+        port = QString::number(ip->port());
+#else
+    port = QString::number(alert->endpoint.port());
+#endif
+
     QString reason;
     switch (alert->reason)
     {
@@ -6100,13 +6124,13 @@ void SessionImpl::handlePeerBlockedAlert(const lt::peer_blocked_alert *alert)
         reason = tr("IP filter", "this peer was blocked. Reason: IP filter.");
         break;
     case lt::peer_blocked_alert::port_filter:
-        reason = tr("filtered port (%1)", "this peer was blocked. Reason: filtered port (8899).").arg(QString::number(alert->endpoint.port()));
+        reason = tr("filtered port (%1)", "this peer was blocked. Reason: filtered port (8899).").arg(port);
         break;
     case lt::peer_blocked_alert::i2p_mixed:
         reason = tr("%1 mixed mode restrictions", "this peer was blocked. Reason: I2P mixed mode restrictions.").arg(u"I2P"_s); // don't translate I2P
         break;
     case lt::peer_blocked_alert::privileged_ports:
-        reason = tr("privileged port (%1)", "this peer was blocked. Reason: privileged port (80).").arg(QString::number(alert->endpoint.port()));
+        reason = tr("privileged port (%1)", "this peer was blocked. Reason: privileged port (80).").arg(port);
         break;
     case lt::peer_blocked_alert::utp_disabled:
         reason = tr("%1 is disabled", "this peer was blocked. Reason: uTP is disabled.").arg(C_UTP); // don't translate μTP
@@ -6116,16 +6140,24 @@ void SessionImpl::handlePeerBlockedAlert(const lt::peer_blocked_alert *alert)
         break;
     }
 
-    const QString ip {toString(alert->endpoint.address())};
-    if (!ip.isEmpty())
-        Logger::instance()->addPeer(ip, true, reason);
+#ifdef QBT_USES_LIBTORRENT21
+    const QString peer = peerEndpointToString(*alert);
+#else
+    const QString peer {toString(alert->endpoint.address())};
+#endif
+    if (!peer.isEmpty())
+        Logger::instance()->addPeer(peer, true, reason);
 }
 
 void SessionImpl::handlePeerBanAlert(const lt::peer_ban_alert *alert)
 {
-    const QString ip {toString(alert->endpoint.address())};
-    if (!ip.isEmpty())
-        Logger::instance()->addPeer(ip, false);
+#ifdef QBT_USES_LIBTORRENT21
+    const QString peer = peerEndpointToString(*alert);
+#else
+    const QString peer {toString(alert->endpoint.address())};
+#endif
+    if (!peer.isEmpty())
+        Logger::instance()->addPeer(peer, false);
 }
 
 void SessionImpl::handleUrlSeedAlert(const lt::url_seed_alert *alert)
