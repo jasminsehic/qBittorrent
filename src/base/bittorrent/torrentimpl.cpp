@@ -868,7 +868,11 @@ bool TorrentImpl::connectPeer(const PeerAddress &peerAddress)
 
 bool TorrentImpl::needSaveResumeData() const
 {
+#ifdef QBT_USES_LIBTORRENT21
+    return bool(m_nativeStatus.need_save_resume_data);
+#else
     return m_nativeStatus.need_save_resume;
+#endif
 }
 
 void TorrentImpl::requestResumeData(const lt::resume_data_flags_t flags)
@@ -2125,7 +2129,7 @@ void TorrentImpl::handleTorrentChecked()
             }
         }
 
-        if (m_nativeStatus.need_save_resume)
+        if (needSaveResumeData())
             deferredRequestResumeData();
 
         m_session->handleTorrentChecked(this);
