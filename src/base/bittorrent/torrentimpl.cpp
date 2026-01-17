@@ -1916,9 +1916,12 @@ void TorrentImpl::reload()
     try
     {
         lt::add_torrent_params p = m_ltAddTorrentParams;
-        p.flags |= lt::torrent_flags::update_subscribe
-                | lt::torrent_flags::override_trackers
+        p.flags |= lt::torrent_flags::update_subscribe;
+
+#ifndef QBT_USES_LIBTORRENT21
+        p.flags |= lt::torrent_flags::override_trackers
                 | lt::torrent_flags::override_web_seeds;
+#endif
 
         if (m_isStopped)
         {
