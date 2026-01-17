@@ -114,6 +114,10 @@ void TorrentCreator::run()
         const Utils::Compare::NaturalLessThan<Qt::CaseInsensitive> naturalLessThan {};
 
         // Adding files to the torrent
+#ifdef QBT_USES_LIBTORRENT21
+        // TODO: may need to remove shortcuts on Windows OS (.lnk)??
+        auto files = lt::list_files(m_params.sourcePath.toString().toStdString(), fileFilter, toNativeTorrentFormatFlag(m_params.torrentFormat));
+#else
         lt::file_storage fs;
         if (QFileInfo(m_params.sourcePath.data()).isFile())
         {
@@ -180,10 +184,13 @@ void TorrentCreator::run()
             for (const QString &fileName : asConst(fileNames))
                 fs.add_file(fileName.toStdString(), fileSizeMap[fileName]);
         }
+#endif
 
         checkInterruptionRequested();
 
-#ifdef QBT_USES_LIBTORRENT2
+#ifdef QBT_USES_LIBTORRENT21
+        lt::create_torrent newTorrent {std::move(files), m_params.pieceSize, toNativeTorrentFormatFlag(m_params.torrentFormat)};
+#elif QBT_USES_LIBTORRENT2
         lt::create_torrent newTorrent {fs, m_params.pieceSize, toNativeTorrentFormatFlag(m_params.torrentFormat)};
 #else
         lt::create_torrent newTorrent {fs, m_params.pieceSize, m_params.paddedFileSizeLimit
@@ -280,6 +287,11 @@ int TorrentCreator::calculateTotalPieces(const Path &inputPath, const int pieceS
     if (inputPath.isEmpty())
         return 0;
 
+#ifdef QBT_USES_LIBTORRENT21
+    auto files = lt::list_files(inputPath.toString().toStdString(), fileFilter, toNativeTorrentFormatFlag(torrentFormat));
+    return lt::create_torrent {std::move(files), pieceSize, toNativeTorrentFormatFlag(torrentFormat)}.num_pieces();
+#elif
+
     lt::file_storage fs;
     lt::add_files(fs, inputPath.toString().toStdString(), fileFilter);
 
@@ -288,5 +300,7 @@ int TorrentCreator::calculateTotalPieces(const Path &inputPath, const int pieceS
 #else
     return lt::create_torrent(fs, pieceSize, paddedFileSizeLimit
         , (isAlignmentOptimized ? lt::create_torrent::optimize_alignment : lt::create_flags_t {})).num_pieces();
+#endif
+
 #endif
 }
