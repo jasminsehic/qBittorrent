@@ -69,7 +69,11 @@ lt::storage_holder CustomDiskIOThread::new_torrent(const lt::storage_params &sto
     m_storageData[storageHolder] =
     {
         savePath,
+#ifdef QBT_USES_LIBTORRENT21
+        storageParams.files,
+#else
         storageParams.mapped_files ? *storageParams.mapped_files : storageParams.files,
+#endif
         storageParams.priorities
     };
 
@@ -156,9 +160,29 @@ void CustomDiskIOThread::async_rename_file(lt::storage_index_t storage, lt::file
             , [=, this, handler = std::move(handler)](const std::string &name, lt::file_index_t index, const lt::storage_error &error)
     {
         if (!error)
+        {
+#ifdef QBT_USES_LIBTORRENT21
+            m_renamedFiles[storage][index] = name;
+#else
             m_storageData[storage].files.rename_file(index, name);
+#endif
+        }
         handler(name, index, error);
     });
+}
+
+std::string CustomDiskIOThread::file_name(lt::storage_index_t storage, lt::file_index_t index) const
+{
+#ifdef QBT_USES_LIBTORRENT21
+    auto storageIt = m_renamedFiles.find(storage);
+    if (storageIt != m_renamedFiles.end())
+    {
+        auto fileIt = storageIt->second.find(index);
+        if (fileIt != storageIt->second.end())
+            return fileIt->second;
+    }
+#endif
+    return m_storageData[storage].files.file_path(index);
 }
 
 void CustomDiskIOThread::async_delete_files(lt::storage_index_t storage, lt::remove_flags_t options
@@ -222,7 +246,7 @@ void CustomDiskIOThread::handleCompleteFiles(lt::storage_index_t storage, const 
         // ignore pad files
         if (fileStorage.pad_file_at(fileIndex)) continue;
 
-        const Path filePath {fileStorage.file_path(fileIndex)};
+        const Path filePath {file_name(storage, fileIndex)};
         if (filePath.hasExtension(QB_EXT))
         {
             const Path incompleteFilePath = savePath / filePath;

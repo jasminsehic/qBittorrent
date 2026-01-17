@@ -1529,7 +1529,11 @@ void SessionImpl::processNextResumeData(ResumeSessionContext *context)
 
             if (nonstd::expected<LoadTorrentParams, QString> loadPreferredResumeDataResult = context->startupStorage->load(torrentID))
             {
+#ifdef QBT_USES_LIBTORRENT21
+                std::shared_ptr<const lt::torrent_info> ti = resumeData.ltAddTorrentParams.ti;
+#else
                 std::shared_ptr<lt::torrent_info> ti = resumeData.ltAddTorrentParams.ti;
+#endif
                 resumeData = std::move(*loadPreferredResumeDataResult);
                 if (!resumeData.ltAddTorrentParams.ti)
                     resumeData.ltAddTorrentParams.ti = std::move(ti);
@@ -2855,7 +2859,11 @@ bool SessionImpl::addTorrent_impl(const TorrentDescriptor &source, const AddTorr
         if (!loadTorrentParams.hasFinishedStatus)
             needFindIncompleteFiles = true;
 
+#ifdef QBT_USES_LIBTORRENT21
+        const int internalFilesCount = torrentInfo.nativeInfo()->files_impl().num_files(); // including .pad files
+#else
         const int internalFilesCount = torrentInfo.nativeInfo()->files().num_files(); // including .pad files
+#endif
         // Use qBittorrent default priority rather than libtorrent's (4)
         p.file_priorities = std::vector(internalFilesCount, LT::toNative(DownloadPriority::Normal));
 

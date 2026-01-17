@@ -37,6 +37,7 @@
 #include <libtorrent/entry.hpp>
 #include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/write_resume_data.hpp>
 
 #include <QByteArray>
@@ -684,8 +685,19 @@ LoadResumeDataResult DBResumeDataStorage::parseQueryResultRow(const QSqlQuery &q
                 , nullptr, bdecodeDepthLimit, bdecodeTokenLimit);
         if (ec)
             return nonstd::make_unexpected(tr("Cannot parse torrent info: %1").arg(QString::fromStdString(ec.message())));
-
+#ifdef QBT_USES_LIBTORRENT21
+        try
+		{
+            auto atp = lt::load_torrent_parsed(torrentInfoRoot);
+            p.ti = atp.ti;
+		}
+		catch (lt::system_error const& err)
+		{
+			ec = err.code();
+		}
+#else
         p.ti = std::make_shared<lt::torrent_info>(torrentInfoRoot, ec);
+#endif
         if (ec)
             return nonstd::make_unexpected(tr("Cannot parse torrent info: %1").arg(QString::fromStdString(ec.message())));
     }

@@ -79,6 +79,7 @@ public:
     void async_stop_torrent(lt::storage_index_t storage, std::function<void ()> handler) override;
     void async_rename_file(lt::storage_index_t storage, lt::file_index_t index, std::string name
                            , std::function<void (const std::string &, lt::file_index_t, const lt::storage_error &)> handler) override;
+    std::string file_name(lt::storage_index_t storage, lt::file_index_t index) const;
     void async_delete_files(lt::storage_index_t storage, lt::remove_flags_t options, std::function<void (const lt::storage_error &)> handler) override;
     void async_set_file_priority(lt::storage_index_t storage, lt::aux::vector<lt::download_priority_t, lt::file_index_t> priorities
                                  , std::function<void (const lt::storage_error &, lt::aux::vector<lt::download_priority_t, lt::file_index_t>)> handler) override;
@@ -101,6 +102,8 @@ private:
         lt::aux::vector<lt::download_priority_t, lt::file_index_t> filePriorities;
     };
     QHash<lt::storage_index_t, StorageData> m_storageData;
+
+    std::unordered_map<lt::storage_index_t, std::unordered_map<lt::file_index_t, std::string>> m_renamedFiles;
 };
 
 #else

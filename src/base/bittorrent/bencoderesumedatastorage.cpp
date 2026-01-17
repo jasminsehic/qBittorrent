@@ -32,6 +32,7 @@
 #include <libtorrent/entry.hpp>
 #include <libtorrent/read_resume_data.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <libtorrent/load_torrent.hpp>
 #include <libtorrent/write_resume_data.hpp>
 
 #include <QByteArray>
@@ -312,8 +313,22 @@ BitTorrent::LoadResumeDataResult BitTorrent::BencodeResumeDataStorage::loadTorre
 
         if (torrentInfoRoot.type() != lt::bdecode_node::dict_t)
             return nonstd::make_unexpected(tr("Cannot parse torrent info: invalid format"));
-
+    
+#ifdef QBT_USES_LIBTORRENT21
+        std::shared_ptr<const lt::torrent_info> torrentInfo;
+        try
+		{
+            auto atp = lt::load_torrent_parsed(torrentInfoRoot);
+            torrentInfo = atp.ti;
+		}
+		catch (lt::system_error const& err)
+		{
+			ec = err.code();
+		}
+#else
         const auto torrentInfo = std::make_shared<lt::torrent_info>(torrentInfoRoot, ec);
+#endif
+        
         if (ec)
             return nonstd::make_unexpected(tr("Cannot parse torrent info: %1").arg(QString::fromStdString(ec.message())));
 

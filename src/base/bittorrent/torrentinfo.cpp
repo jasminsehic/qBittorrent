@@ -48,8 +48,11 @@ TorrentInfo::TorrentInfo(const lt::torrent_info &nativeInfo)
     : m_nativeInfo {std::make_shared<const lt::torrent_info>(nativeInfo)}
 {
     Q_ASSERT(m_nativeInfo->is_valid() && (m_nativeInfo->num_files() > 0));
-
+#if defined(QBT_USES_LIBTORRENT21)
+    const lt::file_storage &fileStorage = m_nativeInfo->layout();
+#else
     const lt::file_storage &fileStorage = m_nativeInfo->orig_files();
+#endif
     m_nativeIndexes.reserve(fileStorage.num_files());
     for (const lt::file_index_t nativeIndex : fileStorage.file_range())
     {
@@ -87,8 +90,11 @@ InfoHash TorrentInfo::infoHash() const
 QString TorrentInfo::name() const
 {
     if (!isValid()) return {};
-
+#if defined(QBT_USES_LIBTORRENT21)
+    return QString::fromStdString(m_nativeInfo->layout().name());
+#else
     return QString::fromStdString(m_nativeInfo->orig_files().name());
+#endif
 }
 
 bool TorrentInfo::isPrivate() const
@@ -141,8 +147,11 @@ Path TorrentInfo::filePath(const int index) const
     Q_ASSERT(index < m_nativeIndexes.size());
     if ((index < 0) || (index >= m_nativeIndexes.size()))
         return {};
-
+#if defined(QBT_USES_LIBTORRENT21)
+    return Path(m_nativeInfo->layout().file_path(m_nativeIndexes[index]));
+#else
     return Path(m_nativeInfo->orig_files().file_path(m_nativeIndexes[index]));
+#endif
 }
 
 PathList TorrentInfo::filePaths() const
@@ -163,8 +172,11 @@ qlonglong TorrentInfo::fileSize(const int index) const
     Q_ASSERT(index < m_nativeIndexes.size());
     if ((index < 0) || (index >= m_nativeIndexes.size()))
         return -1;
-
-    return m_nativeInfo->orig_files().file_size(m_nativeIndexes[index]);
+#if defined(QBT_USES_LIBTORRENT21)
+    return m_nativeInfo->layout().file_size(m_nativeIndexes[index]);
+#else
+    return m_nativeInfo->orig_files().file_size(m_nativeIndexes[index]);  
+#endif
 }
 
 qlonglong TorrentInfo::fileOffset(const int index) const
@@ -175,8 +187,11 @@ qlonglong TorrentInfo::fileOffset(const int index) const
     Q_ASSERT(index < m_nativeIndexes.size());
     if ((index < 0) || (index >= m_nativeIndexes.size()))
         return -1;
-
+#if defined(QBT_USES_LIBTORRENT21)
+    return m_nativeInfo->layout().file_offset(m_nativeIndexes[index]);
+#else
     return m_nativeInfo->orig_files().file_offset(m_nativeIndexes[index]);
+#endif
 }
 
 QByteArray TorrentInfo::rawData() const
@@ -250,7 +265,11 @@ TorrentInfo::PieceRange TorrentInfo::filePieces(const int fileIndex) const
     if ((fileIndex < 0) || (fileIndex >= filesCount()))
         return {};
 
+#if defined(QBT_USES_LIBTORRENT21)
+    const lt::file_storage &files = m_nativeInfo->layout();
+#else
     const lt::file_storage &files = m_nativeInfo->orig_files();
+#endif
     const auto fileSize = files.file_size(m_nativeIndexes[fileIndex]);
     const auto fileOffset = files.file_offset(m_nativeIndexes[fileIndex]);
 

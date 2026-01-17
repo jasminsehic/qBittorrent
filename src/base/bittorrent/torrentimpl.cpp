@@ -1066,7 +1066,12 @@ Path TorrentImpl::actualFilePath(const int index) const
     if ((index < 0) || (index >= nativeIndexes.size()))
         return {};
 
+#if defined(QBT_USES_LIBTORRENT21)
+    const lt::file_storage &fs = nativeTorrentInfo()->files_impl(); // TODO: qbittorrent needs to track the actual file paths, libtorrent will no longer expose it in future
+    return Path(fs.file_path(nativeIndexes[index]));
+#else
     return Path(nativeTorrentInfo()->files().file_path(nativeIndexes[index]));
+#endif
 }
 
 qlonglong TorrentImpl::fileSize(const int index) const
@@ -1087,7 +1092,11 @@ PathList TorrentImpl::actualFilePaths() const
     PathList paths;
     paths.reserve(filesCount());
 
+#if defined(QBT_USES_LIBTORRENT21)
+    const lt::file_storage files = nativeTorrentInfo()->files_impl(); // TODO: qbittorrent needs to track the actual file paths, libtorrent will no longer expose it in future
+#else
     const lt::file_storage files = nativeTorrentInfo()->files();
+#endif
     for (const lt::file_index_t &nativeIndex : asConst(m_torrentInfo.nativeIndexes()))
         paths.emplaceBack(files.file_path(nativeIndex));
 
@@ -1836,9 +1845,13 @@ void TorrentImpl::endReceivedMetadataHandling(const Path &savePath, const PathLi
     m_torrentInfo = TorrentInfo(*metadata);
     m_filePriorities.reserve(filesCount());
     const auto nativeIndexes = m_torrentInfo.nativeIndexes();
+#if defined(QBT_USES_LIBTORRENT21)
+    p.file_priorities = resized(p.file_priorities, metadata->num_files()
+            , LT::toNative(p.file_priorities.empty() ? DownloadPriority::Normal : DownloadPriority::Ignored));
+#else
     p.file_priorities = resized(p.file_priorities, metadata->files().num_files()
             , LT::toNative(p.file_priorities.empty() ? DownloadPriority::Normal : DownloadPriority::Ignored));
-
+#endif
     m_completedFiles.fill(static_cast<bool>(p.flags & lt::torrent_flags::seed_mode), filesCount());
     m_filesProgress.resize(filesCount());
     updateProgress();
@@ -2433,7 +2446,11 @@ void TorrentImpl::handleUnwantedFolderToggled()
 void TorrentImpl::manageActualFilePaths()
 {
     const std::shared_ptr<const lt::torrent_info> nativeInfo = nativeTorrentInfo();
+#if defined(QBT_USES_LIBTORRENT21) 
+    const lt::file_storage &nativeFiles = nativeInfo->files_impl();
+#else
     const lt::file_storage &nativeFiles = nativeInfo->files();
+#endif
 
     for (int i = 0; i < filesCount(); ++i)
     {
@@ -2977,7 +2994,11 @@ void TorrentImpl::prioritizeFiles(const QList<DownloadPriority> &priorities)
         }
     }
 
+#ifdef QBT_USES_LIBTORRENT21
+    const int internalFilesCount = m_torrentInfo.nativeInfo()->num_files();
+#else
     const int internalFilesCount = m_torrentInfo.nativeInfo()->files().num_files(); // including .pad files
+#endif
     auto nativePriorities = std::vector<lt::download_priority_t>(internalFilesCount, LT::toNative(DownloadPriority::Normal));
     const auto nativeIndexes = m_torrentInfo.nativeIndexes();
     for (qsizetype i = 0; i < priorities.size(); ++i)
