@@ -330,11 +330,18 @@ TorrentImpl::TorrentImpl(SessionImpl *session, const lt::torrent_handle &nativeH
 {
     if (m_ltAddTorrentParams.ti)
     {
+#if defined(QBT_USES_LIBTORRENT21)
+        if (m_ltAddTorrentParams.creation_date > 0)
+            m_creationDate = QDateTime::fromSecsSinceEpoch(m_ltAddTorrentParams.creation_date);
+
+        m_creator = QString::fromStdString(m_ltAddTorrentParams.created_by);
+        m_comment = QString::fromStdString(m_ltAddTorrentParams.comment);
+#else
         if (const std::time_t creationDate = m_ltAddTorrentParams.ti->creation_date(); creationDate > 0)
             m_creationDate = QDateTime::fromSecsSinceEpoch(creationDate);
         m_creator = QString::fromStdString(m_ltAddTorrentParams.ti->creator());
         m_comment = QString::fromStdString(m_ltAddTorrentParams.ti->comment());
-
+#endif
         // Initialize it only if torrent is added with metadata.
         // Otherwise it should be initialized in "Metadata received" handler.
         m_torrentInfo = TorrentInfo(*m_ltAddTorrentParams.ti);
