@@ -206,6 +206,10 @@ namespace
 #endif
         case lt::socket_type_t::i2p:
             return u"I2P"_s;
+#ifdef QBT_USES_LIBTORRENT21
+        case lt::socket_type_t::rtc:
+            return u"RTC"_s;
+#endif
         case lt::socket_type_t::socks5:
             return u"SOCKS5"_s;
 #ifdef QBT_USES_LIBTORRENT2

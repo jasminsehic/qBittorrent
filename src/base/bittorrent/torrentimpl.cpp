@@ -2460,7 +2460,7 @@ void TorrentImpl::handleUnwantedFolderToggled()
 void TorrentImpl::manageActualFilePaths()
 {
     const std::shared_ptr<const lt::torrent_info> nativeInfo = nativeTorrentInfo();
-#if defined(QBT_USES_LIBTORRENT21) 
+#if defined(QBT_USES_LIBTORRENT21)
     const lt::file_storage &nativeFiles = nativeInfo->files_impl();
 #else
     const lt::file_storage &nativeFiles = nativeInfo->files();

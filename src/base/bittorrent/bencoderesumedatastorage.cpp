@@ -313,7 +313,7 @@ BitTorrent::LoadResumeDataResult BitTorrent::BencodeResumeDataStorage::loadTorre
 
         if (torrentInfoRoot.type() != lt::bdecode_node::dict_t)
             return nonstd::make_unexpected(tr("Cannot parse torrent info: invalid format"));
-    
+
 #ifdef QBT_USES_LIBTORRENT21
         std::shared_ptr<const lt::torrent_info> torrentInfo;
         try
@@ -328,7 +328,7 @@ BitTorrent::LoadResumeDataResult BitTorrent::BencodeResumeDataStorage::loadTorre
 #else
         const auto torrentInfo = std::make_shared<lt::torrent_info>(torrentInfoRoot, ec);
 #endif
-        
+
         if (ec)
             return nonstd::make_unexpected(tr("Cannot parse torrent info: %1").arg(QString::fromStdString(ec.message())));
 

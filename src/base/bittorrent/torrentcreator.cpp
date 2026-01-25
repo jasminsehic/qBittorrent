@@ -290,7 +290,7 @@ int TorrentCreator::calculateTotalPieces(const Path &inputPath, const int pieceS
 #ifdef QBT_USES_LIBTORRENT21
     auto files = lt::list_files(inputPath.toString().toStdString(), fileFilter, toNativeTorrentFormatFlag(torrentFormat));
     return lt::create_torrent {std::move(files), pieceSize, toNativeTorrentFormatFlag(torrentFormat)}.num_pieces();
-#elif
+#else
 
     lt::file_storage fs;
     lt::add_files(fs, inputPath.toString().toStdString(), fileFilter);

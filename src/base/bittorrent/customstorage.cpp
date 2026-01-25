@@ -65,7 +65,11 @@ lt::storage_holder CustomDiskIOThread::new_torrent(const lt::storage_params &sto
 {
     lt::storage_holder storageHolder = m_nativeDiskIO->new_torrent(storageParams, torrent);
 
+#ifdef QBT_USES_LIBTORRENT21
+    const Path savePath {std::string(storageParams.path)};
+#else
     const Path savePath {storageParams.path};
+#endif
     m_storageData[storageHolder] =
     {
         savePath,

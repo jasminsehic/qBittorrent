@@ -175,7 +175,7 @@ qlonglong TorrentInfo::fileSize(const int index) const
 #if defined(QBT_USES_LIBTORRENT21)
     return m_nativeInfo->layout().file_size(m_nativeIndexes[index]);
 #else
-    return m_nativeInfo->orig_files().file_size(m_nativeIndexes[index]);  
+    return m_nativeInfo->orig_files().file_size(m_nativeIndexes[index]);
 #endif
 }
 

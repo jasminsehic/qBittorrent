@@ -176,7 +176,7 @@ PeerAddress PeerInfo::address() const
 #if defined(QBT_USES_LIBTORRENT21)
     return {QHostAddress(m_nativeInfo.remote_endpoint().data()), m_nativeInfo.remote_endpoint().port()};
 #else
-    return {QHostAddress(m_nativeInfo.ip.data()), m_nativeInfo.ip.port()}
+    return {QHostAddress(m_nativeInfo.ip.data()), m_nativeInfo.ip.port()};
 #endif
 }
 
