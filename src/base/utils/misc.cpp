@@ -283,6 +283,7 @@ QString Utils::Misc::languageToLocalizedString(const QStringView localeStr)
     case QLocale::Armenian: return C_LOCALE_ARMENIAN;
     case QLocale::Azerbaijani: return C_LOCALE_AZERBAIJANI;
     case QLocale::Basque: return C_LOCALE_BASQUE;
+    case QLocale::Bosnian: return C_LOCALE_BOSNIAN;
     case QLocale::Bulgarian: return C_LOCALE_BULGARIAN;
     case QLocale::Byelorussian: return C_LOCALE_BYELORUSSIAN;
     case QLocale::Catalan: return C_LOCALE_CATALAN;
