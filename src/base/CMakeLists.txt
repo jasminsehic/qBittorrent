@@ -223,10 +223,6 @@ add_library(qbt_base STATIC
 )
 
 target_link_libraries(qbt_base
-    PRIVATE
-        OpenSSL::Crypto
-        OpenSSL::SSL
-        ZLIB::ZLIB
     PUBLIC
         LibtorrentRasterbar::torrent-rasterbar
         Qt::Core
@@ -235,17 +231,25 @@ target_link_libraries(qbt_base
         Qt::Sql
         Qt::Xml
         qbt_common_cfg
+    PRIVATE
+        ZLIB::ZLIB
+        OpenSSL::Crypto
+        OpenSSL::SSL
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     find_library(AppKit_LIBRARY AppKit)
     find_library(Carbon_LIBRARY Carbon)
     find_library(IOKit_LIBRARY IOKit)
+    find_library(SYSTEM_CONFIGURATION_LIBRARY SystemConfiguration)
+    find_library(CORE_FOUNDATION_LIBRARY CoreFoundation)
 
     target_link_libraries(qbt_base PRIVATE
         ${AppKit_LIBRARY}
         ${Carbon_LIBRARY}
         ${IOKit_LIBRARY}
+        ${SYSTEM_CONFIGURATION_LIBRARY}
+        ${CORE_FOUNDATION_LIBRARY}
     )
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     include(CheckSymbolExists)

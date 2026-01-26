@@ -20,11 +20,15 @@ jobs:
       fail-fast: false
       matrix:
         libtorrent:
-          - version: "2.0.11"
+          - version: "master" # v2.1.x
             boost_major_version: "1"
             boost_minor_version: "77"
             boost_patch_version: "0"
-          - version: "1.2.20"
+          - version: "v2.0.11"
+            boost_major_version: "1"
+            boost_minor_version: "77"
+            boost_patch_version: "0"
+          - version: "v1.2.20"
             boost_major_version: "1"
             boost_minor_version: "77"
             boost_patch_version: "0"
@@ -84,7 +88,7 @@ jobs:
       - name: Install libtorrent
         run: |
           git clone \
-            --branch v${{ matrix.libtorrent.version }} \
+            --branch ${{ matrix.libtorrent.version }} \
             --depth 1 \
             --recurse-submodules \
             https://github.com/arvidn/libtorrent.git \
@@ -99,21 +103,22 @@ jobs:
             -DCMAKE_CXX_STANDARD=20 \
             -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DBOOST_ROOT="${{ env.boost_path }}/lib/cmake" \
-            -Ddeprecated-functions=OFF
+            -Ddeprecated-functions=OFF \
+            -Dwebtorrent=ON
           cmake --build build
           sudo cmake --install build
 
       # to avoid scanning 3rdparty codebases, initialize it just before building qbt
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
-        if: startsWith(matrix.libtorrent.version, 2) && (matrix.qbt_gui == 'GUI=ON')
+        if: (startsWith(matrix.libtorrent.version, 2) || matrix.libtorrent.version == 'master') && (matrix.qbt_gui == 'GUI=ON')
         with:
           config-file: ./.github/workflows/helper/codeql/cpp.yaml
           languages: cpp
 
       - name: Build qBittorrent
         run: |
-          CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }} -DQT_FORCE_ASSERTS -Werror" \
+          CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }} -isystem ${{ env.boost_path }} -DQT_FORCE_ASSERTS -Werror" \
           LDFLAGS="$LDFLAGS -gz" \
           cmake \
             -B build \
@@ -137,7 +142,7 @@ jobs:
 
       - name: Run CodeQL analysis
         uses: github/codeql-action/analyze@v4
-        if: startsWith(matrix.libtorrent.version, 2) && (matrix.qbt_gui == 'GUI=ON')
+        if: (startsWith(matrix.libtorrent.version, 2) || matrix.libtorrent.version == 'master') && (matrix.qbt_gui == 'GUI=ON')
         with:
           category: ${{ github.base_ref || github.ref_name }}
 
