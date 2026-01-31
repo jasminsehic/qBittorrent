@@ -1314,7 +1314,7 @@
     </message>
     <message>
         <source>Enable super seeding for torrent</source>
-        <translation>Omogući super seeding za torrent</translation>
+        <translation>Omogući super-dijeljenje za torrent</translation>
     </message>
     <message>
         <source>Prefer TCP</source>
@@ -1350,7 +1350,7 @@
     </message>
     <message>
         <source>Embedded tracker port:</source>
-        <translation>Ugrađeni port za praćenje:</translation>
+        <translation>Ugrađeni port trackera:</translation>
     </message>
     <message>
         <source>Fastest upload</source>
@@ -1386,7 +1386,7 @@
     </message>
     <message>
         <source>Enable embedded tracker:</source>
-        <translation>Omogući ugrađeni alat za praćenje:</translation>
+        <translation>Omogućiti ugrađeni tracker:</translation>
     </message>
     <message>
         <source>Remove torrent</source>
@@ -1422,7 +1422,7 @@
     </message>
     <message>
         <source>Seeding Limits</source>
-        <translation>Ograničenja sjetve</translation>
+        <translation>Ograničenja dijeljenja</translation>
     </message>
     <message>
         <source>KiB</source>
@@ -1550,7 +1550,7 @@
     </message>
     <message>
         <source>Validate HTTPS tracker certificate:</source>
-        <translation>Validacija HTTPS certifikata za praćenje:</translation>
+        <translation>Validacija HTTPS certifikata za trackera:</translation>
     </message>
     <message>
         <source>Peer connection protocol:</source>
@@ -1818,7 +1818,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Stop tracker timeout [0: disabled]:</source>
-        <translation>Zaustavljanje praćenja vremena isteka [0: onemogućeno]:</translation>
+        <translation>Vrijeme isteka zaustavljanja trackera [0: onemogućeno]</translation>
     </message>
     <message>
         <source>Outgoing ports (Min) [0: disabled]:</source>
@@ -1838,7 +1838,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>When total seeding time reaches</source>
-        <translation>Kada dostigne ukupno vrijeme sjetve</translation>
+        <translation>Kada ukupan vrijeme dijeljenja dostigne</translation>
     </message>
     <message>
         <source>(None)</source>
@@ -1866,7 +1866,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>When inactive seeding time reaches</source>
-        <translation>Kada dostigne vrijeme neaktivne sjetve</translation>
+        <translation>Kada vrijeme neaktivnog dijeljenja dostigne</translation>
     </message>
     <message>
         <source>Mixed mode</source>
@@ -2010,7 +2010,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Display full announce URL in the Tracker column</source>
-        <translation>Prikaži puni URL najave u koloni za praćenje</translation>
+        <translation>Prikaži puni URL najave u koloni Tracker</translation>
     </message>
     <message>
         <source>URL:</source>
@@ -2030,7 +2030,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Automatically append these trackers to new downloads:</source>
-        <translation>Automatski dodajte ove alate za praćenje novim preuzimanjima:</translation>
+        <translation>Automatski dodajte ove trackere novim preuzimanjima:</translation>
     </message>
     <message>
         <source>Downloading torrents:</source>
@@ -2240,12 +2240,12 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     <message>
         <source>Down Speed</source>
         <comment>i.e: Download speed</comment>
-        <translation>Brzina dolje</translation>
+        <translation>Brzina skidanja</translation>
     </message>
     <message>
         <source>Up Speed</source>
         <comment>i.e: Upload speed</comment>
-        <translation>Brzina povećanja</translation>
+        <translation>Brzina slanja</translation>
     </message>
     <message>
         <source>Downloaded</source>
@@ -2738,7 +2738,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Seeding (0)</source>
-        <translation>Sjetba (0)</translation>
+        <translation>Dijeljenje (0)</translation>
     </message>
     <message>
         <source>Completed (0)</source>
@@ -2886,12 +2886,12 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     <message>
         <source>Down Speed</source>
         <comment>i.e: Download speed</comment>
-        <translation>Brzina dolje</translation>
+        <translation>Brzina skidanja</translation>
     </message>
     <message>
         <source>Up Speed</source>
         <comment>i.e: Upload speed</comment>
-        <translation>Brzina povećanja</translation>
+        <translation>Brzina slanja</translation>
     </message>
     <message>
         <source>Ratio</source>
@@ -2923,7 +2923,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Tracker</source>
-        <translation>Praćenje</translation>
+        <translation>Tracker</translation>
     </message>
     <message>
         <source>Down Limit</source>
@@ -3048,7 +3048,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Tracker URL:</source>
-        <translation>URL za praćenje:</translation>
+        <translation>URL trackera:</translation>
     </message>
     <message>
         <source>Updating...</source>
@@ -3080,15 +3080,15 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Copy tracker URL</source>
-        <translation>Kopiraj URL za praćenje</translation>
+        <translation>Kopiraj URL trackera</translation>
     </message>
     <message>
         <source>Edit tracker URL...</source>
-        <translation>Uredi URL za praćenje...</translation>
+        <translation>Uredi URL trackera...</translation>
     </message>
     <message>
         <source>Tracker editing</source>
-        <translation>Uređivanje praćenja</translation>
+        <translation>Uređivanje trackera</translation>
     </message>
     <message>
         <source>Leeches</source>
@@ -3096,7 +3096,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Remove tracker</source>
-        <translation>Ukloni praćenje</translation>
+        <translation>Ukloni tracker</translation>
     </message>
     <message>
         <source>Remaining</source>
@@ -3207,11 +3207,11 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>[F] Seeding</source>
-        <translation>[F] Sjetva</translation>
+        <translation>[F] Dijeljenje</translation>
     </message>
     <message>
         <source>Seeding</source>
-        <translation>Sjetba</translation>
+        <translation>Dijeljenje</translation>
     </message>
     <message>
         <source>Queued</source>
@@ -3375,7 +3375,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Super seeding mode</source>
-        <translation>Super način sjetve</translation>
+        <translation>Super-dijeljenje</translation>
     </message>
     <message>
         <source>Rename...</source>
@@ -3546,7 +3546,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Enable super seeding for torrent</source>
-        <translation>Omogući super seeding za torrent</translation>
+        <translation>Omogući super-dijeljenje za torrent</translation>
     </message>
     <message>
         <source>Action when the limit is reached</source>
@@ -3568,7 +3568,7 @@ Koristite &apos;;&apos; za razdvajanje više unosa. Možete koristiti džoker &a
     </message>
     <message>
         <source>Remove tracker</source>
-        <translation>Ukloni praćenje</translation>
+        <translation>Ukloni tracker</translation>
     </message>
 </context>
 <context>
@@ -4513,7 +4513,7 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
     </message>
     <message>
         <source>Trackerless</source>
-        <translation>Bez praćenja</translation>
+        <translation>Bez trackera</translation>
     </message>
     <message>
         <source>Start torrents</source>
@@ -4521,7 +4521,7 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
     </message>
     <message>
         <source>Remove tracker</source>
-        <translation>Ukloni praćenje</translation>
+        <translation>Ukloni tracker</translation>
     </message>
     <message>
         <source>Stop torrents</source>
@@ -4958,7 +4958,7 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
     </message>
     <message>
         <source>Tracker URLs:</source>
-        <translation>URL-ovi za praćenje:</translation>
+        <translation>URL-ovi trackera:</translation>
     </message>
     <message>
         <source>Are you sure you want to delete selected tasks?</source>
@@ -4988,7 +4988,9 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
         <source>Start
                 seeding
                 immediately</source>
-        <translation>Počnite sjetvu odmah</translation>
+        <translation>Pokreni
+                dijeljenje
+                odmah</translation>
     </message>
     <message>
         <source>Format</source>

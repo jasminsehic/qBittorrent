@@ -911,7 +911,7 @@
     <message>
         <location filename="../gui/advancedsettings.cpp" line="835"/>
         <source>Stop tracker timeout [0: disabled]</source>
-        <translation>Zaustavljanje praćenja vremena isteka [0: onemogućeno]</translation>
+        <translation>Vrijeme isteka zaustavljanja trackera [0: onemogućeno]</translation>
     </message>
     <message>
         <location filename="../gui/advancedsettings.cpp" line="851"/>
@@ -1098,7 +1098,7 @@
     <message>
         <location filename="../gui/advancedsettings.cpp" line="758"/>
         <source>Validate HTTPS tracker certificates</source>
-        <translation>Validacija HTTPS certifikata za praćenje</translation>
+        <translation>Validacija HTTPS certifikata za trackera</translation>
     </message>
     <message>
         <location filename="../gui/advancedsettings.cpp" line="763"/>
@@ -2370,7 +2370,7 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
     <message>
         <location filename="../base/bittorrent/sessionimpl.cpp" line="2420"/>
         <source>Super seeding enabled.</source>
-        <translation>Super seeding je omogućeno.</translation>
+        <translation>Super-dijeljenje je omogućeno.</translation>
     </message>
     <message>
         <location filename="../base/bittorrent/sessionimpl.cpp" line="2388"/>
@@ -2501,12 +2501,12 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
     <message>
         <location filename="../base/bittorrent/sessionimpl.cpp" line="4049"/>
         <source>Tracker list updated</source>
-        <translation>Lista praćenja ažurirana</translation>
+        <translation>Lista trackera je ažurirana</translation>
     </message>
     <message>
         <location filename="../base/bittorrent/sessionimpl.cpp" line="4053"/>
         <source>Failed to update tracker list. Reason: &quot;%1&quot;</source>
-        <translation>Ažuriranje liste za praćenje nije uspjelo. Razlog: &quot;%1&quot;</translation>
+        <translation>Ažuriranje liste trackera nije uspjelo. Razlog: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../base/bittorrent/sessionimpl.cpp" line="4183"/>
@@ -2837,7 +2837,7 @@ Podržava formate: S01E01, 1x1, 2017.12.31 i 31.12.2017 (Formati datuma također
     <message>
         <location filename="../base/bittorrent/tracker.cpp" line="222"/>
         <source>Embedded Tracker: Unable to bind to IP: %1, port: %2. Reason: %3</source>
-        <translation>Ugrađeni alat za praćenje: Nije moguće povezivanje s IP adresom: %1, portom: %2. Razlog: %3</translation>
+        <translation>Ugrađeni tracker: Nije moguće povezivanje s IP adresom: %1, portom: %2. Razlog: %3</translation>
     </message>
 </context>
 <context>
@@ -4313,7 +4313,7 @@ Minimalni zahtjev: %2.</translation>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1881"/>
         <source>Paused</source>
-        <translation>Zaustavljeno</translation>
+        <translation>Pauzirano</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1892"/>
@@ -4387,13 +4387,13 @@ Minimalni zahtjev: %2.</translation>
         <location filename="../gui/mainwindow.cpp" line="1875"/>
         <source>DL speed: %1</source>
         <comment>e.g: Download speed: 10 KiB/s</comment>
-        <translation>Brzina DL-a: %1</translation>
+        <translation>Brzina skidanja: %1</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1876"/>
         <source>UP speed: %1</source>
         <comment>e.g: Upload speed: 10 KiB/s</comment>
-        <translation>Brzina gore: %1</translation>
+        <translation>Brzina slanja: %1</translation>
     </message>
     <message>
         <location filename="../gui/mainwindow.cpp" line="1502"/>
@@ -6295,12 +6295,12 @@ Onemogući enkripciju: Poveži se samo sa peerovima koji ne koriste protokol enk
     <message>
         <location filename="../gui/optionsdialog.ui" line="3108"/>
         <source>When total seeding time reaches</source>
-        <translation>Kada dostigne ukupno vrijeme sjetve</translation>
+        <translation>Kada ukupan vrijeme dijeljenja dostigne</translation>
     </message>
     <message>
         <location filename="../gui/optionsdialog.ui" line="3131"/>
         <source>When inactive seeding time reaches</source>
-        <translation>Kada dostigne vrijeme neaktivne sjetve</translation>
+        <translation>Kada vrijeme neaktivnog dijeljenja dostigne</translation>
     </message>
     <message>
         <location filename="../gui/optionsdialog.ui" line="3417"/>
@@ -6338,7 +6338,7 @@ Onemogući enkripciju: Poveži se samo sa peerovima koji ne koriste protokol enk
     <message>
         <location filename="../gui/optionsdialog.ui" line="3069"/>
         <source>Seeding Limits</source>
-        <translation>Ograničenja sjetve</translation>
+        <translation>Ograničenja dijeljenja</translation>
     </message>
     <message>
         <location filename="../gui/optionsdialog.ui" line="3173"/>
@@ -6353,7 +6353,7 @@ Onemogući enkripciju: Poveži se samo sa peerovima koji ne koriste protokol enk
     <message>
         <location filename="../gui/optionsdialog.ui" line="3183"/>
         <source>Enable super seeding for torrent</source>
-        <translation>Omogući super seeding za torrent</translation>
+        <translation>Omogući super-dijeljenje za torrent</translation>
     </message>
     <message>
         <location filename="../gui/optionsdialog.ui" line="3075"/>
@@ -6378,7 +6378,7 @@ Onemogući enkripciju: Poveži se samo sa peerovima koji ne koriste protokol enk
     <message>
         <location filename="../gui/optionsdialog.ui" line="3194"/>
         <source>A&amp;utomatically append these trackers to new downloads:</source>
-        <translation>Automatski &amp;dodajte ove alate za praćenje novim preuzimanjima:</translation>
+        <translation>Automatski &amp;dodajte ove trackere novim preuzimanjima:</translation>
     </message>
     <message>
         <location filename="../gui/optionsdialog.ui" line="3216"/>
@@ -8040,13 +8040,13 @@ readme[0-9].txt: filtrira &apos;readme1.txt&apos;, &apos;readme2.txt&apos; ali n
         <location filename="../gui/properties/peerlistwidget.cpp" line="122"/>
         <source>Down Speed</source>
         <comment>i.e: Download speed</comment>
-        <translation>Brzina dolje</translation>
+        <translation>Brzina skidanja</translation>
     </message>
     <message>
         <location filename="../gui/properties/peerlistwidget.cpp" line="123"/>
         <source>Up Speed</source>
         <comment>i.e: Upload speed</comment>
-        <translation>Brzina povećanja</translation>
+        <translation>Brzina slanja</translation>
     </message>
     <message>
         <location filename="../gui/properties/peerlistwidget.cpp" line="124"/>
@@ -8789,12 +8789,12 @@ Ti dodaci su bili onemogućeni.</translation>
         <location filename="../gui/properties/propertieswidget.cpp" line="620"/>
         <source>Add web seed</source>
         <comment>Add HTTP source</comment>
-        <translation>Dodaj web seeder</translation>
+        <translation>Dodaj web seed-ove</translation>
     </message>
     <message>
         <location filename="../gui/properties/propertieswidget.cpp" line="621"/>
         <source>Add web seed:</source>
-        <translation>Dodaj web seeder:</translation>
+        <translation>Dodaj web seed-ove:</translation>
     </message>
     <message>
         <location filename="../gui/properties/propertieswidget.cpp" line="627"/>
@@ -8810,12 +8810,12 @@ Ti dodaci su bili onemogućeni.</translation>
     <message>
         <location filename="../gui/properties/propertieswidget.cpp" line="558"/>
         <source>Add web seed...</source>
-        <translation>Dodaj web seeder...</translation>
+        <translation>Dodaj web seed-ove...</translation>
     </message>
     <message>
         <location filename="../gui/properties/propertieswidget.cpp" line="562"/>
         <source>Remove web seed</source>
-        <translation>Uklonite web seeder</translation>
+        <translation>Uklonite web seed-ove</translation>
     </message>
     <message>
         <location filename="../gui/properties/propertieswidget.cpp" line="565"/>
@@ -10376,7 +10376,7 @@ Kliknite na dugme &quot;Pretraži dodatke...&quot; u donjem desnom uglu prozora 
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="53"/>
         <source>Seeding (0)</source>
-        <translation>Sjetba (0)</translation>
+        <translation>Dijeljenje (0)</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="56"/>
@@ -10406,7 +10406,7 @@ Kliknite na dugme &quot;Pretraži dodatke...&quot; u donjem desnom uglu prozora 
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="71"/>
         <source>Stalled (0)</source>
-        <translation>Zaustavljeno (0)</translation>
+        <translation>Zastalo (0)</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="74"/>
@@ -10496,17 +10496,17 @@ Kliknite na dugme &quot;Pretraži dodatke...&quot; u donjem desnom uglu prozora 
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="172"/>
         <source>Stalled (%1)</source>
-        <translation>Zaustavljeno (%1)</translation>
+        <translation>Zastalo (%1)</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="173"/>
         <source>Stalled Uploading (%1)</source>
-        <translation>Zaustavljeno otpremanje (%1)</translation>
+        <translation>Zastalo otpremanje (%1)</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="174"/>
         <source>Stalled Downloading (%1)</source>
-        <translation>Zaustavljeno preuzimanje (%1)</translation>
+        <translation>Zastalo preuzimanje (%1)</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/statusfilterwidget.cpp" line="175"/>
@@ -10992,7 +10992,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/torrentcreatordialog.ui" line="238"/>
         <source>Start seeding immediately</source>
-        <translation>Odmah počnite sa sjetvom</translation>
+        <translation>Pokreni dijeljenje odmah</translation>
     </message>
     <message>
         <location filename="../gui/torrentcreatordialog.ui" line="248"/>
@@ -11037,7 +11037,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/torrentcreatordialog.ui" line="319"/>
         <source>Tracker URLs:</source>
-        <translation>URL-ovi za praćenje:</translation>
+        <translation>URL-ovi trackera:</translation>
     </message>
     <message>
         <location filename="../gui/torrentcreatordialog.ui" line="356"/>
@@ -11311,7 +11311,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/torrentsharelimitswidget.ui" line="42"/>
         <source>Seeding time:</source>
-        <translation>Vrijeme sjetve:</translation>
+        <translation>Vrijeme dijeljenja:</translation>
     </message>
     <message>
         <location filename="../gui/torrentsharelimitswidget.ui" line="55"/>
@@ -11329,7 +11329,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/torrentsharelimitswidget.ui" line="68"/>
         <source>Inactive seeding time:</source>
-        <translation>Neaktivno vrijeme sjetve:</translation>
+        <translation>Neaktivno vrijeme dijeljenja:</translation>
     </message>
     <message>
         <location filename="../gui/torrentsharelimitswidget.ui" line="98"/>
@@ -11354,7 +11354,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/torrentsharelimitswidget.cpp" line="70"/>
         <source>Enable super seeding for torrent</source>
-        <translation>Omogući super seeding za torrent</translation>
+        <translation>Omogući super-dijeljenje za torrent</translation>
     </message>
     <message>
         <location filename="../gui/torrentsharelimitswidget.cpp" line="417"/>
@@ -11824,43 +11824,43 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="274"/>
         <source>Tracker editing</source>
-        <translation>Uređivanje praćenja</translation>
+        <translation>Uređivanje trackera</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="274"/>
         <source>Tracker URL:</source>
-        <translation>URL za praćenje:</translation>
+        <translation>URL trackera:</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="281"/>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="299"/>
         <source>Tracker editing failed</source>
-        <translation>Uređivanje praćenja nije uspjelo</translation>
+        <translation>Uređivanje trackera nije uspjelo</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="281"/>
         <source>The tracker URL entered is invalid.</source>
-        <translation>Uneseni URL za praćenje je nevažeći.</translation>
+        <translation>Uneseni URL trackera je neispravan.</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="299"/>
         <source>The tracker URL already exists.</source>
-        <translation>URL za praćenje već postoji.</translation>
+        <translation>URL trackera već postoji.</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="370"/>
         <source>Edit tracker URL...</source>
-        <translation>Uredi URL za praćenje...</translation>
+        <translation>Uredi URL trackera...</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="372"/>
         <source>Remove tracker</source>
-        <translation>Ukloni praćenje</translation>
+        <translation>Ukloni tracker</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="374"/>
         <source>Copy tracker URL</source>
-        <translation>Kopiraj URL za praćenje</translation>
+        <translation>Kopiraj URL trackera</translation>
     </message>
     <message>
         <location filename="../gui/trackerlist/trackerlistwidget.cpp" line="378"/>
@@ -11962,17 +11962,17 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/trackersadditiondialog.cpp" line="94"/>
         <source>Trackers list URL error</source>
-        <translation>Greška URL-a liste za praćenje</translation>
+        <translation>Greška u URL-u liste trackera</translation>
     </message>
     <message>
         <location filename="../gui/trackersadditiondialog.cpp" line="94"/>
         <source>The trackers list URL cannot be empty</source>
-        <translation>URL liste za praćenje ne može biti prazan</translation>
+        <translation>URL liste trackera ne može biti prazan</translation>
     </message>
     <message>
         <location filename="../gui/trackersadditiondialog.cpp" line="114"/>
         <source>Download trackers list error</source>
-        <translation>Greška pri preuzimanju liste za praćenje</translation>
+        <translation>Greška pri preuzimanju liste trackera</translation>
     </message>
     <message>
         <location filename="../gui/trackersadditiondialog.cpp" line="115"/>
@@ -11990,7 +11990,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/transferlistfilters/trackersfilterwidget.cpp" line="118"/>
         <source>Trackerless (%1)</source>
-        <translation>Bez praćenja (%1)</translation>
+        <translation>Bez trackera (%1)</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/trackersfilterwidget.cpp" line="120"/>
@@ -12005,7 +12005,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/transferlistfilters/trackersfilterwidget.cpp" line="537"/>
         <source>Remove tracker</source>
-        <translation>Ukloni praćenje</translation>
+        <translation>Ukloni tracker</translation>
     </message>
     <message>
         <location filename="../gui/transferlistfilters/trackersfilterwidget.cpp" line="542"/>
@@ -12091,7 +12091,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
         <location filename="../gui/transferlistmodel.cpp" line="96"/>
         <source>Stalled</source>
         <comment>Torrent is waiting for download to begin</comment>
-        <translation>Zaustavljeno</translation>
+        <translation>Zastalo</translation>
     </message>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="97"/>
@@ -12116,13 +12116,13 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
         <location filename="../gui/transferlistmodel.cpp" line="101"/>
         <source>Seeding</source>
         <comment>Torrent is complete and in upload-only mode</comment>
-        <translation>Sjetba</translation>
+        <translation>Dijeljenje</translation>
     </message>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="102"/>
         <source>[F] Seeding</source>
         <comment>Used when the torrent is forced started. You probably shouldn't translate the F.</comment>
-        <translation>[F] Sjetva</translation>
+        <translation>[F] Dijeljenje</translation>
     </message>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="103"/>
@@ -12211,13 +12211,13 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
         <location filename="../gui/transferlistmodel.cpp" line="167"/>
         <source>Down Speed</source>
         <comment>i.e: Download speed</comment>
-        <translation>Brzina dolje</translation>
+        <translation>Brzina skidanja</translation>
     </message>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="168"/>
         <source>Up Speed</source>
         <comment>i.e: Upload speed</comment>
-        <translation>Brzina povećanja</translation>
+        <translation>Brzina slanja</translation>
     </message>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="169"/>
@@ -12261,7 +12261,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="176"/>
         <source>Tracker</source>
-        <translation>Praćenje</translation>
+        <translation>Tracker</translation>
     </message>
     <message>
         <location filename="../gui/transferlistmodel.cpp" line="177"/>
@@ -12735,7 +12735,7 @@ Molimo odaberite drugi naziv i pokušajte ponovo.</translation>
     <message>
         <location filename="../gui/transferlistwidget.cpp" line="1019"/>
         <source>Super seeding mode</source>
-        <translation>Super način sjetve</translation>
+        <translation>Super-dijeljenje</translation>
     </message>
 </context>
 <context>
