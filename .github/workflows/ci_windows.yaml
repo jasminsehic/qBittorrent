@@ -134,6 +134,20 @@ jobs:
             --recurse-submodules `
             https://github.com/arvidn/libtorrent.git `
             ${{ env.libtorrent_path }}
+
+      - name: Enable DEBUG_RTC in libtorrent
+        shell: pwsh
+        run: |
+          $rtcFile = "${{ env.libtorrent_path }}/src/rtc_signaling.cpp"
+          if (Test-Path $rtcFile) {
+            (Get-Content $rtcFile -Raw) `
+            -replace '#define DEBUG_RTC 0', '#define DEBUG_RTC 1' `
+            -replace 'using ::operator<<;', 'using std::operator<<;' |
+            Set-Content $rtcFile
+          }
+
+      - name: Build libtorrent
+        run: |
           cd ${{ env.libtorrent_path }}
           $env:CXXFLAGS+=" /guard:cf"
           $env:LDFLAGS+=" /GUARD:CF"
