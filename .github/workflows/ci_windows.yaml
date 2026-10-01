@@ -19,17 +19,23 @@ jobs:
       fail-fast: false
       matrix:
         libtorrent:
-          - version: "2.1.1"
+          - version: "2.1.2"
+            repo: "https://github.com/jasminsehic/libtorrent.git"
+            ref: "stale-webtorrent-fix"
             boost_major_version: "1"
             boost_minor_version: "91"
             boost_patch_version: "0"
-            libt_build_flags: ""
-          - version: "2.0.14"
+            libt_build_flags: "-Dwebtorrent-debug-log=ON"
+          - version: "2.0.15"
+            repo: "https://github.com/arvidn/libtorrent.git"
+            ref: "v2.0.15"
             boost_major_version: "1"
             boost_minor_version: "91"
             boost_patch_version: "0"
             libt_build_flags: ""
           - version: "1.2.20"
+            repo: "https://github.com/arvidn/libtorrent.git"
+            ref: "v1.2.20"
             boost_major_version: "1"
             boost_minor_version: "86"
             boost_patch_version: "0"
@@ -132,10 +138,10 @@ jobs:
       - name: Install libtorrent
         run: |
           git clone `
-            --branch v${{ matrix.libtorrent.version }} `
+            --branch ${{ matrix.libtorrent.ref }} `
             --depth 1 `
             --recurse-submodules `
-            https://github.com/arvidn/libtorrent.git `
+            ${{ matrix.libtorrent.repo }} `
             ${{ env.libtorrent_path }}
           cd ${{ env.libtorrent_path }}
           $env:CFLAGS+=" /guard:cf"

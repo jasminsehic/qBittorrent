@@ -1978,7 +1978,9 @@ lt::settings_pack SessionImpl::loadLTSettings() const
         | lt::alert::port_mapping_notification
         | lt::alert::status_notification
         | lt::alert::storage_notification
-        | lt::alert::tracker_notification;
+        | lt::alert::tracker_notification
+        | lt::alert::session_log_notification
+        | lt::alert::torrent_log_notification;
     settingsPack.set_int(lt::settings_pack::alert_mask, alertMask);
 
     settingsPack.set_int(lt::settings_pack::connection_speed, connectionSpeed());
@@ -6245,6 +6247,14 @@ void SessionImpl::handleAlert(lt::alert *alert)
 #if LIBTORRENT_VERSION_NUM >= 20101
         case lt::ip_ban_alert::alert_type:
             handleIPBanAlert(static_cast<const lt::ip_ban_alert *>(alert));
+            break;
+#endif
+#if LIBTORRENT_VERSION_NUM >= 20100
+        case lt::log_alert::alert_type:
+            LogMsg(QString::fromStdString(alert->message()), Log::INFO);
+            break;
+        case lt::torrent_log_alert::alert_type:
+            LogMsg(QString::fromStdString(alert->message()), Log::INFO);
             break;
 #endif
         }
