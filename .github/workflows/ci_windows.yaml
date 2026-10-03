@@ -21,7 +21,7 @@ jobs:
         libtorrent:
           - version: "2.1.2"
             repo: "https://github.com/jasminsehic/libtorrent.git"
-            ref: "stale-webtorrent-fix"
+            ref: "fix-stale-webtorrent"
             boost_major_version: "1"
             boost_minor_version: "91"
             boost_patch_version: "0"
