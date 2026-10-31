@@ -678,20 +678,20 @@ QBT_TR((best choice if supported))QBT_TR[CONTEXT=OptionsDialog] QBT_TR(Default p
         </div>
         <div class="formRow">
             <label>QBT_TR(TURN servers)QBT_TR[CONTEXT=OptionsDialog]</label>
-            <div style="width: 420px; max-width: 100%; overflow-x: auto;">
-                <table style="width: 420px; min-width: 420px; max-width: none; table-layout: fixed;">
+            <div style="width: 420px; max-width: 100%;">
+                <table style="width: 100%; table-layout: fixed;">
                     <colgroup>
-                        <col style="width: 180px;">
-                        <col style="width: 90px;">
-                        <col style="width: 90px;">
-                        <col style="width: 60px;">
+                        <col style="width: calc((100% - 40px) / 2);">
+                        <col style="width: calc((100% - 40px) / 4);">
+                        <col style="width: calc((100% - 40px) / 4);">
+                        <col style="width: 40px;">
                     </colgroup>
                 <thead>
                     <tr>
                         <th>QBT_TR(Server URL)QBT_TR[CONTEXT=OptionsDialog]</th>
                         <th>QBT_TR(Username)QBT_TR[CONTEXT=OptionsDialog]</th>
                         <th>QBT_TR(Password)QBT_TR[CONTEXT=OptionsDialog]</th>
-                        <th>QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]</th>
+                        <th aria-label="QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]"></th>
                     </tr>
                 </thead>
                 <tbody id="webTorrentTURNRows"></tbody>
