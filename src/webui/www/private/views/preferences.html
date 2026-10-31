@@ -2329,7 +2329,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
 
         const loadWebTorrentTURNServers = (servers) => {
             document.getElementById("webTorrentTURNRows").replaceChildren();
-            for (const line of (servers || "").split(/\\r?\\n/).filter(Boolean)) {
+            for (const line of (servers || "").split(/\r?\n/).filter(Boolean)) {
                 try {
                     const url = new URL(line);
                     const username = decodeURIComponent(url.username);
@@ -2358,7 +2358,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                 url.password = fields[2].value;
                 result.push(url.href);
             }
-            return result.join("\\n");
+            return result.join("\n");
         };
 
         const updatePeerProxyAuthSettings = () => {
