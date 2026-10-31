@@ -2008,10 +2008,8 @@ lt::settings_pack SessionImpl::loadLTSettings() const
 {
     lt::settings_pack settingsPack;
 
-    // Opt-in diagnostics for investigating WebTorrent privacy isolation.
-    // Start qBittorrent with QBT_WEBTORRENT_PRIVACY_TRACE=1 to enable.
-    // Avoid logging TURN credentials, SDP, and tracker announce bodies.
-    const bool privacyTrace = (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1);
+    // Always-on privacy diagnostics for this custom build. Only forward
+    // filtered/redacted event classes, never credentials, SDP, or wire payloads.
     const lt::alert_category_t alertMask = lt::alert::error_notification
         | lt::alert::file_progress_notification
         | lt::alert::ip_block_notification
@@ -2022,14 +2020,13 @@ lt::settings_pack SessionImpl::loadLTSettings() const
         | lt::alert::storage_notification
         | lt::alert::tracker_notification
 #ifndef TORRENT_DISABLE_LOGGING
-        | (privacyTrace ? (lt::alert::session_log_notification
-            | lt::alert::torrent_log_notification
-            | lt::alert::peer_log_notification) : lt::alert_category_t())
+        | lt::alert::session_log_notification
+        | lt::alert::torrent_log_notification
+        | lt::alert::peer_log_notification
 #endif
         ;
     settingsPack.set_int(lt::settings_pack::alert_mask, alertMask);
 
-    if (privacyTrace)
     {
         const int stunCount = getWebTorrentSTUNServer().split(u'\n', Qt::SkipEmptyParts).size();
         const int turnCount = getWebTorrentTURNServers().split(u'\n', Qt::SkipEmptyParts).size();
@@ -6195,42 +6192,33 @@ void SessionImpl::handleAlert(lt::alert *alert)
 #ifndef TORRENT_DISABLE_LOGGING
         case lt::torrent_log_alert::alert_type:
         {
-            if (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1)
-            {
-                const QString message = QString::fromUtf8(
-                    static_cast<const lt::torrent_log_alert *>(alert)->log_message());
-                if (message.contains(u"PRIVACY_TRACE"_s)
-                    || message.contains(u"*** RTC"_s)
-                    || message.contains(u"WEBSOCKET_TRACKER_ANNOUNCE_TIMEOUT"_s))
-                    LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
-            }
+            const QString message = QString::fromUtf8(
+                static_cast<const lt::torrent_log_alert *>(alert)->log_message());
+            if (message.contains(u"PRIVACY_TRACE"_s)
+                || message.contains(u"*** RTC"_s)
+                || message.contains(u"WEBSOCKET_TRACKER_ANNOUNCE_TIMEOUT"_s))
+                LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
             break;
         }
         case lt::log_alert::alert_type:
         {
-            if (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1)
-            {
-                const QString message = QString::fromUtf8(
-                    static_cast<const lt::log_alert *>(alert)->log_message());
-                if (message.contains(u"PRIVACY_TRACE"_s))
-                    LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
-            }
+            const QString message = QString::fromUtf8(
+                static_cast<const lt::log_alert *>(alert)->log_message());
+            if (message.contains(u"PRIVACY_TRACE"_s))
+                LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
             break;
         }
         case lt::peer_log_alert::alert_type:
         {
-            if (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1)
-            {
-                const auto *const peer = static_cast<const lt::peer_log_alert *>(alert);
-                // Record transfer and connection event classes without dumping
-                // wire data, peer payloads, or other untrusted log text.
-                if ((peer->event_type == lt::peer_log_alert::on_send_data)
-                    || (peer->event_type == lt::peer_log_alert::on_receive_data)
-                    || (peer->event_type == lt::peer_log_alert::connection_established)
-                    || (peer->event_type == lt::peer_log_alert::connection_closed))
-                    LogMsg(u"PRIVACY_TRACE PEER_IO event=%1 direction=%2"_s
-                        .arg(int(peer->event_type)).arg(int(peer->direction)), Log::INFO);
-            }
+            const auto *const peer = static_cast<const lt::peer_log_alert *>(alert);
+            // Record transfer and connection event classes without dumping
+            // wire data, peer payloads, or other untrusted log text.
+            if ((peer->event_type == lt::peer_log_alert::on_send_data)
+                || (peer->event_type == lt::peer_log_alert::on_receive_data)
+                || (peer->event_type == lt::peer_log_alert::connection_established)
+                || (peer->event_type == lt::peer_log_alert::connection_closed))
+                LogMsg(u"PRIVACY_TRACE PEER_IO event=%1 direction=%2"_s
+                    .arg(int(peer->event_type)).arg(int(peer->direction)), Log::INFO);
             break;
         }
 #endif
