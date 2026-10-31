@@ -673,17 +673,17 @@ QBT_TR((best choice if supported))QBT_TR[CONTEXT=OptionsDialog] QBT_TR(Default p
     <fieldset class="settings" id="webTorrentSettings">
         <legend>QBT_TR(WebTorrent)QBT_TR[CONTEXT=OptionsDialog]</legend>
         <div class="formRow">
-            <label for="webTorrentSTUNServers">QBT_TR(STUN servers (one per line):)QBT_TR[CONTEXT=OptionsDialog]</label>
-            <textarea id="webTorrentSTUNServers" rows="3" cols="55"></textarea>
+            <label for="webTorrentSTUNServers" style="display: block;">QBT_TR(STUN servers (one per line):)QBT_TR[CONTEXT=OptionsDialog]</label>
+            <textarea id="webTorrentSTUNServers" rows="3" cols="55" style="display: block; width: 100%; max-width: 44em;"></textarea>
         </div>
         <div class="formRow">
             <label>QBT_TR(TURN servers)QBT_TR[CONTEXT=OptionsDialog]</label>
-            <table style="width: 100%; table-layout: fixed;">
+            <table style="width: 100%; max-width: 44em; table-layout: fixed;">
                 <colgroup>
-                    <col style="width: 50%;">
-                    <col style="width: 22%;">
-                    <col style="width: 22%;">
-                    <col style="width: 6%;">
+                    <col style="width: 45%;">
+                    <col style="width: 22.5%;">
+                    <col style="width: 22.5%;">
+                    <col style="width: 10%;">
                 </colgroup>
                 <thead>
                     <tr>
@@ -2322,10 +2322,10 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                 input.value = value;
                 if (type === "password")
                     input.autocomplete = "new-password";
-                if (type === "url") {
+                if (type === "url")
                     input.placeholder = "turn://host:3478?transport=udp";
-                    input.style.width = "25em";
-                }
+                input.style.width = "100%";
+                input.style.minWidth = "0";
                 const cell = row.insertCell();
                 cell.append(input);
             }
