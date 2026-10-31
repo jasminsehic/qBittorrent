@@ -41,7 +41,12 @@
 #include <QDialogButtonBox>
 #include <QEvent>
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QMessageBox>
+#include <QLineEdit>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QUrl>
 #include <QStyleFactory>
 #include <QSystemTrayIcon>
 
@@ -987,7 +992,27 @@ void OptionsDialog::loadConnectionTabOptions()
     m_ui->checkProxyPeerConnections->setChecked(session->isProxyPeerConnectionsEnabled());
     m_ui->checkProxyBitTorrent->setChecked(Preferences::instance()->useProxyForBT());
     m_ui->checkProxyRSS->setChecked(Preferences::instance()->useProxyForRSS());
+
     m_ui->checkProxyMisc->setChecked(Preferences::instance()->useProxyForGeneralPurposes());
+
+    // Preserve existing STUN preferences; allow multiple newline-delimited entries.
+    m_ui->editWebTorrentSTUNServers->setPlainText(session->getWebTorrentSTUNServer());
+    m_ui->checkWebTorrentRelayOnly->setChecked(session->isWebTorrentRelayOnly());
+    m_ui->editWebTorrentSTUNServers->setEnabled(!session->isWebTorrentRelayOnly());
+    for (const QString &entry : session->getWebTorrentTURNServers().split(u'\n', Qt::SkipEmptyParts))
+    {
+        const QUrl url(entry.trimmed());
+        const int row = m_ui->tableWebTorrentTURN->rowCount();
+        m_ui->tableWebTorrentTURN->insertRow(row);
+        m_ui->tableWebTorrentTURN->setItem(row, 0, new QTableWidgetItem(url.toString(QUrl::FullyEncoded | QUrl::RemoveUserInfo)));
+        m_ui->tableWebTorrentTURN->setItem(row, 1, new QTableWidgetItem(url.userName(QUrl::FullyDecoded)));
+        auto *passwordEdit = new QLineEdit(m_ui->tableWebTorrentTURN);
+        passwordEdit->setEchoMode(QLineEdit::Password);
+        passwordEdit->setText(url.password(QUrl::FullyDecoded));
+        m_ui->tableWebTorrentTURN->setCellWidget(row, 2, passwordEdit);
+        connect(passwordEdit, &QLineEdit::textChanged, this, &ThisType::enableApplyButton);
+    }
+    m_ui->tableWebTorrentTURN->horizontalHeader()->setStretchLastSection(true);
 
     m_ui->checkIPFilter->setChecked(session->isIPFilteringEnabled());
     m_ui->textFilterPath->setDialogCaption(tr("Choose an IP filter file"));
@@ -1042,6 +1067,30 @@ void OptionsDialog::loadConnectionTabOptions()
     connect(m_ui->textProxyUsername, &QLineEdit::textChanged, this, &ThisType::enableApplyButton);
     connect(m_ui->textProxyPassword, &QLineEdit::textChanged, this, &ThisType::enableApplyButton);
 
+    connect(m_ui->checkWebTorrentRelayOnly, &QCheckBox::toggled
+        , m_ui->editWebTorrentSTUNServers, &QWidget::setDisabled);
+    connect(m_ui->checkWebTorrentRelayOnly, &QCheckBox::toggled, this, &ThisType::enableApplyButton);
+    connect(m_ui->editWebTorrentSTUNServers, &QPlainTextEdit::textChanged, this, &ThisType::enableApplyButton);
+    connect(m_ui->tableWebTorrentTURN, &QTableWidget::itemChanged, this, &ThisType::enableApplyButton);
+    connect(m_ui->addWebTorrentTURNButton, &QPushButton::clicked, this, [this] {
+        const int row = m_ui->tableWebTorrentTURN->rowCount();
+        m_ui->tableWebTorrentTURN->insertRow(row);
+        m_ui->tableWebTorrentTURN->setItem(row, 0, new QTableWidgetItem(u"turn://host:3478?transport=udp"_s));
+        m_ui->tableWebTorrentTURN->setItem(row, 1, new QTableWidgetItem());
+        auto *passwordEdit = new QLineEdit(m_ui->tableWebTorrentTURN);
+        passwordEdit->setEchoMode(QLineEdit::Password);
+        m_ui->tableWebTorrentTURN->setCellWidget(row, 2, passwordEdit);
+        connect(passwordEdit, &QLineEdit::textChanged, this, &ThisType::enableApplyButton);
+        enableApplyButton();
+    });
+    connect(m_ui->removeWebTorrentTURNButton, &QPushButton::clicked, this, [this] {
+        if (const int row = m_ui->tableWebTorrentTURN->currentRow(); row >= 0)
+        {
+            m_ui->tableWebTorrentTURN->removeRow(row);
+            enableApplyButton();
+        }
+    });
+
     connect(m_ui->checkIPFilter, &QAbstractButton::toggled, this, &ThisType::enableApplyButton);
     connect(m_ui->checkIPFilter, &QAbstractButton::toggled, m_ui->textFilterPath, &QWidget::setEnabled);
     connect(m_ui->checkIPFilter, &QAbstractButton::toggled, m_ui->IpFilterRefreshBtn, &QWidget::setEnabled);
@@ -1088,6 +1137,32 @@ void OptionsDialog::saveConnectionTabOptions() const
     Preferences::instance()->setUseProxyForGeneralPurposes(m_ui->checkProxyMisc->isChecked());
 
     session->setProxyPeerConnectionsEnabled(m_ui->checkProxyPeerConnections->isChecked());
+
+    session->setWebTorrentSTUNServer(m_ui->editWebTorrentSTUNServers->toPlainText().trimmed());
+    session->setWebTorrentRelayOnly(m_ui->checkWebTorrentRelayOnly->isChecked());
+    QStringList turnServers;
+    for (int row = 0; row < m_ui->tableWebTorrentTURN->rowCount(); ++row)
+    {
+        const auto *urlItem = m_ui->tableWebTorrentTURN->item(row, 0);
+        if (!urlItem || urlItem->text().trimmed().isEmpty())
+            continue;
+
+        QUrl url(urlItem->text().trimmed());
+        if (!url.isValid() || ((url.scheme() != u"turn") && (url.scheme() != u"turns")))
+            continue;
+        if (const auto *username = m_ui->tableWebTorrentTURN->item(row, 1))
+        {
+            if (!username->text().isEmpty())
+                url.setUserName(username->text());
+        }
+        if (const auto *passwordEdit = qobject_cast<QLineEdit *>(m_ui->tableWebTorrentTURN->cellWidget(row, 2)))
+        {
+            if (!passwordEdit->text().isEmpty())
+                url.setPassword(passwordEdit->text());
+        }
+        turnServers.append(url.toString(QUrl::FullyEncoded));
+    }
+    session->setWebTorrentTURNServers(turnServers.join(u'\n'));
 
     // IPFilter
     session->setIPFilteringEnabled(isIPFilteringEnabled());
