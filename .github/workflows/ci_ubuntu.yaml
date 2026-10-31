@@ -190,7 +190,10 @@ jobs:
 
       - name: Package AppImage
         run: |
+          # Only SQLite is required; skip database plugins that can depend on
+          # MySQL client libraries absent from the Ubuntu runner.
           rm -f "$QT_PLUGIN_PATH/sqldrivers/libqsqlmimer.so"
+          rm -f "$QT_PLUGIN_PATH/sqldrivers/libqsqlmysql.so"
           ./linuxdeploy-x86_64.AppImage --appdir qbittorrent --plugin qt
           mkdir -p qbittorrent/apprun-hooks
           rm -f qbittorrent/apprun-hooks/*
