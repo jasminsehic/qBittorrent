@@ -2318,7 +2318,9 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                     [password, "password"]
                 ]) {
                 const input = document.createElement("input");
-                input.type = type;
+                // Use the themed text input for TURN URLs (URL validity is
+                // checked when saving, not by the browser input type).
+                input.type = (type === "url") ? "text" : type;
                 input.value = value;
                 if (type === "password")
                     input.autocomplete = "new-password";
@@ -2326,6 +2328,8 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                     input.placeholder = "turn://host:3478?transport=udp";
                 input.style.width = "100%";
                 input.style.minWidth = "0";
+                // Keep input padding/borders inside the 50/25/25 column widths.
+                input.style.boxSizing = "border-box";
                 const cell = row.insertCell();
                 cell.append(input);
             }
