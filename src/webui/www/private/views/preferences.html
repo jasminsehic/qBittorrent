@@ -677,18 +677,15 @@ QBT_TR((best choice if supported))QBT_TR[CONTEXT=OptionsDialog] QBT_TR(Default p
             <textarea id="webTorrentSTUNServers" rows="3" cols="55" style="display: block; width: 100%; max-width: 44em;"></textarea>
         </div>
         <div class="formRow">
-            <input type="checkbox" id="webTorrentRelayOnly" onchange="qBittorrent.Preferences.updateWebTorrentRelayOnly();">
-            <label for="webTorrentRelayOnly">QBT_TR(Use TURN relays only (no direct connections))QBT_TR[CONTEXT=OptionsDialog]</label>
-        </div>
-        <div class="formRow">
             <label>QBT_TR(TURN servers)QBT_TR[CONTEXT=OptionsDialog]</label>
-            <table style="width: 100%; max-width: 100%; table-layout: fixed;">
-                <colgroup>
-                    <col style="width: calc((100% - 7em) / 2);">
-                    <col style="width: calc((100% - 7em) / 4);">
-                    <col style="width: calc((100% - 7em) / 4);">
-                    <col style="width: 7em;">
-                </colgroup>
+            <div style="max-width: 100%; overflow-x: auto;">
+                <table style="width: 820px; min-width: 820px; max-width: none; table-layout: fixed;">
+                    <colgroup>
+                        <col style="width: 360px;">
+                        <col style="width: 180px;">
+                        <col style="width: 180px;">
+                        <col style="width: 100px;">
+                    </colgroup>
                 <thead>
                     <tr>
                         <th>QBT_TR(Server URL)QBT_TR[CONTEXT=OptionsDialog]</th>
@@ -698,11 +695,16 @@ QBT_TR((best choice if supported))QBT_TR[CONTEXT=OptionsDialog] QBT_TR(Default p
                     </tr>
                 </thead>
                 <tbody id="webTorrentTURNRows"></tbody>
-            </table>
+                </table>
+            </div>
             <button type="button" onclick="qBittorrent.Preferences.addWebTorrentTURNRow();">QBT_TR(Add)QBT_TR[CONTEXT=OptionsDialog]</button>
         </div>
         <div class="formRow">
             <span>QBT_TR(Note: The password is saved unencrypted)QBT_TR[CONTEXT=OptionsDialog]</span>
+        </div>
+        <div class="formRow">
+            <input type="checkbox" id="webTorrentRelayOnly" onchange="qBittorrent.Preferences.updateWebTorrentRelayOnly();">
+            <label for="webTorrentRelayOnly">QBT_TR(Use TURN relays only (no direct connections))QBT_TR[CONTEXT=OptionsDialog]</label>
         </div>
     </fieldset>
 
