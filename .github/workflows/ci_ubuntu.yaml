@@ -113,7 +113,7 @@ jobs:
       - name: Build qBittorrent
         run: |
           CFLAGS="$CFLAGS ${{ env.harden_flags }}" \
-          CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }} -DQT_FORCE_ASSERTS -Werror" \
+          CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }} -DQT_FORCE_ASSERTS -Werror -Wno-error=bidi-chars" \
           LDFLAGS="$LDFLAGS -gz" \
           cmake \
             -B build \

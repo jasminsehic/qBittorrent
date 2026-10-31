@@ -2299,7 +2299,6 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             updatePeerProxyAuthSettings();
         };
 
-
         const updateWebTorrentRelayOnly = () => {
             document.getElementById("webTorrentSTUNServers").disabled =
                 document.getElementById("webTorrentRelayOnly").checked;
@@ -2307,7 +2306,11 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
 
         const addWebTorrentTURNRow = (server = "", username = "", password = "") => {
             const row = document.getElementById("webTorrentTURNRows").insertRow();
-            for (const [value, type] of [[server, "url"], [username, "text"], [password, "password"]]) {
+            for (const [value, type] of [
+                    [server, "url"],
+                    [username, "text"],
+                    [password, "password"]
+                ]) {
                 const input = document.createElement("input");
                 input.type = type;
                 input.value = value;
@@ -2323,7 +2326,9 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             const removeButton = document.createElement("button");
             removeButton.type = "button";
             removeButton.textContent = "QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]";
-            removeButton.addEventListener("click", () => row.remove());
+            removeButton.addEventListener("click", (event) => {
+                event.currentTarget.closest("tr").remove();
+            });
             row.insertCell().append(removeButton);
         };
 
@@ -2350,7 +2355,8 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             for (const row of document.getElementById("webTorrentTURNRows").rows) {
                 const fields = row.querySelectorAll("input");
                 const rawURL = fields[0].value.trim();
-                if (!rawURL) continue;
+                if (!rawURL)
+                    continue;
                 const url = new URL(rawURL);
                 if (!["turn:", "turns:"].includes(url.protocol))
                     throw new Error("QBT_TR(TURN server URL must use turn:// or turns://)QBT_TR[CONTEXT=OptionsDialog]");
