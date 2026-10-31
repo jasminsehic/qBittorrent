@@ -1012,7 +1012,17 @@ void OptionsDialog::loadConnectionTabOptions()
         m_ui->tableWebTorrentTURN->setCellWidget(row, 2, passwordEdit);
         connect(passwordEdit, &QLineEdit::textChanged, this, &ThisType::enableApplyButton);
     }
-    m_ui->tableWebTorrentTURN->horizontalHeader()->setStretchLastSection(true);
+    // Keep URL, username and password columns in a stable 2:1:1 ratio.
+    auto *turnHeader = m_ui->tableWebTorrentTURN->horizontalHeader();
+    turnHeader->setSectionResizeMode(QHeaderView::Fixed);
+    auto resizeTURNColumns = [table = m_ui->tableWebTorrentTURN] {
+        const int width = table->viewport()->width();
+        table->setColumnWidth(0, width / 2);
+        table->setColumnWidth(1, width / 4);
+        table->setColumnWidth(2, width - width / 2 - width / 4);
+    };
+    resizeTURNColumns();
+    connect(turnHeader, &QHeaderView::geometriesChanged, this, resizeTURNColumns);
 
     m_ui->checkIPFilter->setChecked(session->isIPFilteringEnabled());
     m_ui->textFilterPath->setDialogCaption(tr("Choose an IP filter file"));
