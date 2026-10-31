@@ -485,6 +485,8 @@ SessionImpl::SessionImpl(QObject *parent)
     : Session(parent)
     , m_DHTBootstrapNodes(BITTORRENT_SESSION_KEY(u"DHTBootstrapNodes"_s), DEFAULT_DHT_BOOTSTRAP_NODES)
     , m_webTorrentSTUNServer(BITTORRENT_SESSION_KEY(u"WebTorrentSTUNServer"_s), u"stun.l.google.com:19302"_s)
+    , m_webTorrentTURNServers(BITTORRENT_SESSION_KEY(u"WebTorrentTURNServers"_s), QString())
+    , m_webTorrentRelayOnly(BITTORRENT_SESSION_KEY(u"WebTorrentRelayOnly"_s), false)
     , m_isDHTEnabled(BITTORRENT_SESSION_KEY(u"DHTEnabled"_s), true)
     , m_isLSDEnabled(BITTORRENT_SESSION_KEY(u"LSDEnabled"_s), true)
     , m_isPeXEnabled(BITTORRENT_SESSION_KEY(u"PeXEnabled"_s), true)
@@ -846,6 +848,34 @@ void SessionImpl::setWebTorrentSTUNServer(const QString &server)
         return;
 
     m_webTorrentSTUNServer = server;
+    configureDeferred();
+}
+
+QString SessionImpl::getWebTorrentTURNServers() const
+{
+    return m_webTorrentTURNServers;
+}
+
+void SessionImpl::setWebTorrentTURNServers(const QString &servers)
+{
+    if (servers == getWebTorrentTURNServers())
+        return;
+
+    m_webTorrentTURNServers = servers;
+    configureDeferred();
+}
+
+bool SessionImpl::isWebTorrentRelayOnly() const
+{
+    return m_webTorrentRelayOnly;
+}
+
+void SessionImpl::setWebTorrentRelayOnly(const bool enabled)
+{
+    if (enabled == isWebTorrentRelayOnly())
+        return;
+
+    m_webTorrentRelayOnly = enabled;
     configureDeferred();
 }
 
@@ -1978,6 +2008,8 @@ lt::settings_pack SessionImpl::loadLTSettings() const
 {
     lt::settings_pack settingsPack;
 
+    // Always-on privacy diagnostics for this custom build. Only forward
+    // filtered/redacted event classes, never credentials, SDP, or wire payloads.
     const lt::alert_category_t alertMask = lt::alert::error_notification
         | lt::alert::file_progress_notification
         | lt::alert::ip_block_notification
@@ -1986,8 +2018,25 @@ lt::settings_pack SessionImpl::loadLTSettings() const
         | lt::alert::port_mapping_notification
         | lt::alert::status_notification
         | lt::alert::storage_notification
-        | lt::alert::tracker_notification;
+        | lt::alert::tracker_notification
+#ifndef TORRENT_DISABLE_LOGGING
+        | lt::alert::session_log_notification
+        | lt::alert::torrent_log_notification
+        | lt::alert::peer_log_notification
+#endif
+        ;
     settingsPack.set_int(lt::settings_pack::alert_mask, alertMask);
+
+    {
+        const int stunCount = getWebTorrentSTUNServer().split(u'\n', Qt::SkipEmptyParts).size();
+        const int turnCount = getWebTorrentTURNServers().split(u'\n', Qt::SkipEmptyParts).size();
+        LogMsg(u"PRIVACY_TRACE QBT_CONFIG relay_only=%1 stun_entries=%2 turn_entries=%3 "
+            "i2p=%4 mixed=%5 proxy_for_bt=%6 proxy_for_peers=%7"_s
+            .arg(int(isWebTorrentRelayOnly())).arg(stunCount).arg(turnCount)
+            .arg(int(isI2PEnabled())).arg(int(I2PMixedMode()))
+            .arg(int(Preferences::instance()->useProxyForBT()))
+            .arg(int(isProxyPeerConnectionsEnabled())), Log::INFO);
+    }
 
     settingsPack.set_int(lt::settings_pack::connection_speed, connectionSpeed());
     settingsPack.set_bool(lt::settings_pack::seeding_outgoing_connections, isSeedingOutgoingConnectionsEnabled());
@@ -2272,6 +2321,8 @@ lt::settings_pack SessionImpl::loadLTSettings() const
 #if LIBTORRENT_VERSION_NUM >= 20100
     // STUN server for WebTorrent NAT traversal
     settingsPack.set_str(lt::settings_pack::webtorrent_stun_server, getWebTorrentSTUNServer().toStdString());
+    settingsPack.set_str(lt::settings_pack::webtorrent_turn_servers, getWebTorrentTURNServers().toStdString());
+    settingsPack.set_bool(lt::settings_pack::webtorrent_relay_only, isWebTorrentRelayOnly());
 #endif
 
     settingsPack.set_bool(lt::settings_pack::enable_dht, isDHTEnabled());
@@ -6138,6 +6189,39 @@ void SessionImpl::handleAlert(lt::alert *alert)
     {
         switch (alert->type())
         {
+#ifndef TORRENT_DISABLE_LOGGING
+        case lt::torrent_log_alert::alert_type:
+        {
+            const QString message = QString::fromUtf8(
+                static_cast<const lt::torrent_log_alert *>(alert)->log_message());
+            if (message.contains(u"PRIVACY_TRACE"_s)
+                || message.contains(u"*** RTC"_s)
+                || message.contains(u"WEBSOCKET_TRACKER_ANNOUNCE_TIMEOUT"_s))
+                LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
+            break;
+        }
+        case lt::log_alert::alert_type:
+        {
+            const QString message = QString::fromUtf8(
+                static_cast<const lt::log_alert *>(alert)->log_message());
+            if (message.contains(u"PRIVACY_TRACE"_s))
+                LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
+            break;
+        }
+        case lt::peer_log_alert::alert_type:
+        {
+            const auto *const peer = static_cast<const lt::peer_log_alert *>(alert);
+            // Record transfer and connection event classes without dumping
+            // wire data, peer payloads, or other untrusted log text.
+            if ((peer->event_type == lt::peer_log_alert::on_send_data)
+                || (peer->event_type == lt::peer_log_alert::on_receive_data)
+                || (peer->event_type == lt::peer_log_alert::connection_established)
+                || (peer->event_type == lt::peer_log_alert::connection_closed))
+                LogMsg(u"PRIVACY_TRACE PEER_IO event=%1 direction=%2"_s
+                    .arg(int(peer->event_type)).arg(int(peer->direction)), Log::INFO);
+            break;
+        }
+#endif
 #ifdef QBT_USES_LIBTORRENT2
         case lt::file_prio_alert::alert_type:
             handleFilePrioAlert(static_cast<const lt::file_prio_alert *>(alert));
