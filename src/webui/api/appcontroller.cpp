@@ -537,6 +537,8 @@ void AppController::preferencesAction()
     data[u"dht_bootstrap_nodes"_s] = session->getDHTBootstrapNodes();
     // STUN server for WebTorrent NAT traversal
     data[u"webtorrent_stun_server"_s] = session->getWebTorrentSTUNServer();
+    data[u"webtorrent_turn_servers"_s] = session->getWebTorrentTURNServers();
+    data[u"webtorrent_relay_only"_s] = session->isWebTorrentRelayOnly();
 
     setResult(data);
 }
@@ -1272,6 +1274,10 @@ void AppController::setPreferencesAction()
     // STUN server for WebTorrent NAT traversal
     if (hasKey(u"webtorrent_stun_server"_s))
         session->setWebTorrentSTUNServer(it.value().toString());
+    if (hasKey(u"webtorrent_turn_servers"_s))
+        session->setWebTorrentTURNServers(it.value().toString());
+    if (hasKey(u"webtorrent_relay_only"_s))
+        session->setWebTorrentRelayOnly(it.value().toBool());
 
     // Save preferences
     pref->apply();

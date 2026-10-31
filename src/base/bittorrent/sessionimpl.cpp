@@ -485,6 +485,8 @@ SessionImpl::SessionImpl(QObject *parent)
     : Session(parent)
     , m_DHTBootstrapNodes(BITTORRENT_SESSION_KEY(u"DHTBootstrapNodes"_s), DEFAULT_DHT_BOOTSTRAP_NODES)
     , m_webTorrentSTUNServer(BITTORRENT_SESSION_KEY(u"WebTorrentSTUNServer"_s), u"stun.l.google.com:19302"_s)
+    , m_webTorrentTURNServers(BITTORRENT_SESSION_KEY(u"WebTorrentTURNServers"_s), QString())
+    , m_webTorrentRelayOnly(BITTORRENT_SESSION_KEY(u"WebTorrentRelayOnly"_s), false)
     , m_isDHTEnabled(BITTORRENT_SESSION_KEY(u"DHTEnabled"_s), true)
     , m_isLSDEnabled(BITTORRENT_SESSION_KEY(u"LSDEnabled"_s), true)
     , m_isPeXEnabled(BITTORRENT_SESSION_KEY(u"PeXEnabled"_s), true)
@@ -846,6 +848,34 @@ void SessionImpl::setWebTorrentSTUNServer(const QString &server)
         return;
 
     m_webTorrentSTUNServer = server;
+    configureDeferred();
+}
+
+QString SessionImpl::getWebTorrentTURNServers() const
+{
+    return m_webTorrentTURNServers;
+}
+
+void SessionImpl::setWebTorrentTURNServers(const QString &servers)
+{
+    if (servers == getWebTorrentTURNServers())
+        return;
+
+    m_webTorrentTURNServers = servers;
+    configureDeferred();
+}
+
+bool SessionImpl::isWebTorrentRelayOnly() const
+{
+    return m_webTorrentRelayOnly;
+}
+
+void SessionImpl::setWebTorrentRelayOnly(const bool enabled)
+{
+    if (enabled == isWebTorrentRelayOnly())
+        return;
+
+    m_webTorrentRelayOnly = enabled;
     configureDeferred();
 }
 
@@ -2272,6 +2302,8 @@ lt::settings_pack SessionImpl::loadLTSettings() const
 #if LIBTORRENT_VERSION_NUM >= 20100
     // STUN server for WebTorrent NAT traversal
     settingsPack.set_str(lt::settings_pack::webtorrent_stun_server, getWebTorrentSTUNServer().toStdString());
+    settingsPack.set_str(lt::settings_pack::webtorrent_turn_servers, getWebTorrentTURNServers().toStdString());
+    settingsPack.set_bool(lt::settings_pack::webtorrent_relay_only, isWebTorrentRelayOnly());
 #endif
 
     settingsPack.set_bool(lt::settings_pack::enable_dht, isDHTEnabled());

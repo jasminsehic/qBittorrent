@@ -208,6 +208,10 @@ namespace BitTorrent
         virtual void setDHTBootstrapNodes(const QString &nodes) = 0;
         virtual QString getWebTorrentSTUNServer() const = 0;
         virtual void setWebTorrentSTUNServer(const QString &server) = 0;
+        virtual QString getWebTorrentTURNServers() const = 0;
+        virtual void setWebTorrentTURNServers(const QString &servers) = 0;
+        virtual bool isWebTorrentRelayOnly() const = 0;
+        virtual void setWebTorrentRelayOnly(bool enabled) = 0;
         virtual bool isDHTEnabled() const = 0;
         virtual void setDHTEnabled(bool enabled) = 0;
         virtual bool isLSDEnabled() const = 0;
