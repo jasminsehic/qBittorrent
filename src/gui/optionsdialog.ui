@@ -2371,6 +2371,13 @@ readme[0-9].txt: filter 'readme1.txt', 'readme2.txt' but not 'readme10.txt'.</st
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="checkWebTorrentRelayOnly">
+                 <property name="text">
+                  <string>Use TURN relays only (no direct connections)</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QLabel" name="labelWebTorrentTURN">
                  <property name="text">
                   <string>TURN servers</string>
@@ -2400,13 +2407,6 @@ readme[0-9].txt: filter 'readme1.txt', 'readme2.txt' but not 'readme10.txt'.</st
                    <string>Password</string>
                   </property>
                  </column>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="checkWebTorrentRelayOnly">
-                 <property name="text">
-                  <string>Use TURN relays only (no direct connections)</string>
-                 </property>
                 </widget>
                </item>
                <item>
