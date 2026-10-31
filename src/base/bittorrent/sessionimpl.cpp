@@ -2008,6 +2008,10 @@ lt::settings_pack SessionImpl::loadLTSettings() const
 {
     lt::settings_pack settingsPack;
 
+    // Opt-in diagnostics for investigating WebTorrent privacy isolation.
+    // Start qBittorrent with QBT_WEBTORRENT_PRIVACY_TRACE=1 to enable.
+    // Avoid logging TURN credentials, SDP, and tracker announce bodies.
+    const bool privacyTrace = (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1);
     const lt::alert_category_t alertMask = lt::alert::error_notification
         | lt::alert::file_progress_notification
         | lt::alert::ip_block_notification
@@ -2016,8 +2020,26 @@ lt::settings_pack SessionImpl::loadLTSettings() const
         | lt::alert::port_mapping_notification
         | lt::alert::status_notification
         | lt::alert::storage_notification
-        | lt::alert::tracker_notification;
+        | lt::alert::tracker_notification
+#ifndef TORRENT_DISABLE_LOGGING
+        | (privacyTrace ? (lt::alert::session_log_notification
+            | lt::alert::torrent_log_notification
+            | lt::alert::peer_log_notification) : lt::alert_category_t())
+#endif
+        ;
     settingsPack.set_int(lt::settings_pack::alert_mask, alertMask);
+
+    if (privacyTrace)
+    {
+        const int stunCount = getWebTorrentSTUNServer().split(u'\n', Qt::SkipEmptyParts).size();
+        const int turnCount = getWebTorrentTURNServers().split(u'\n', Qt::SkipEmptyParts).size();
+        LogMsg(u"PRIVACY_TRACE QBT_CONFIG relay_only=%1 stun_entries=%2 turn_entries=%3 "
+            "i2p=%4 mixed=%5 proxy_for_bt=%6 proxy_for_peers=%7"_s
+            .arg(int(isWebTorrentRelayOnly())).arg(stunCount).arg(turnCount)
+            .arg(int(isI2PEnabled())).arg(int(I2PMixedMode()))
+            .arg(int(Preferences::instance()->useProxyForBT()))
+            .arg(int(isProxyPeerConnectionsEnabled())), Log::INFO);
+    }
 
     settingsPack.set_int(lt::settings_pack::connection_speed, connectionSpeed());
     settingsPack.set_bool(lt::settings_pack::seeding_outgoing_connections, isSeedingOutgoingConnectionsEnabled());
@@ -6170,6 +6192,48 @@ void SessionImpl::handleAlert(lt::alert *alert)
     {
         switch (alert->type())
         {
+#ifndef TORRENT_DISABLE_LOGGING
+        case lt::torrent_log_alert::alert_type:
+        {
+            if (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1)
+            {
+                const QString message = QString::fromUtf8(
+                    static_cast<const lt::torrent_log_alert *>(alert)->log_message());
+                if (message.contains(u"PRIVACY_TRACE"_s)
+                    || message.contains(u"*** RTC"_s)
+                    || message.contains(u"WEBSOCKET_TRACKER_ANNOUNCE_TIMEOUT"_s))
+                    LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
+            }
+            break;
+        }
+        case lt::log_alert::alert_type:
+        {
+            if (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1)
+            {
+                const QString message = QString::fromUtf8(
+                    static_cast<const lt::log_alert *>(alert)->log_message());
+                if (message.contains(u"PRIVACY_TRACE"_s))
+                    LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
+            }
+            break;
+        }
+        case lt::peer_log_alert::alert_type:
+        {
+            if (qEnvironmentVariableIntValue("QBT_WEBTORRENT_PRIVACY_TRACE") == 1)
+            {
+                const auto *const peer = static_cast<const lt::peer_log_alert *>(alert);
+                // Record transfer and connection event classes without dumping
+                // wire data, peer payloads, or other untrusted log text.
+                if ((peer->event_type == lt::peer_log_alert::on_send_data)
+                    || (peer->event_type == lt::peer_log_alert::on_receive_data)
+                    || (peer->event_type == lt::peer_log_alert::connection_established)
+                    || (peer->event_type == lt::peer_log_alert::connection_closed))
+                    LogMsg(u"PRIVACY_TRACE PEER_IO event=%1 direction=%2"_s
+                        .arg(int(peer->event_type)).arg(int(peer->direction)), Log::INFO);
+            }
+            break;
+        }
+#endif
 #ifdef QBT_USES_LIBTORRENT2
         case lt::file_prio_alert::alert_type:
             handleFilePrioAlert(static_cast<const lt::file_prio_alert *>(alert));
