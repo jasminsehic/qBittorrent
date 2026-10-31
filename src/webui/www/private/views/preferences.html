@@ -670,6 +670,36 @@ QBT_TR((best choice if supported))QBT_TR[CONTEXT=OptionsDialog] QBT_TR(Default p
         </div>
     </fieldset>
 
+    <fieldset class="settings" id="webTorrentSettings">
+        <legend>QBT_TR(WebTorrent)QBT_TR[CONTEXT=OptionsDialog]</legend>
+        <div class="formRow">
+            <input type="checkbox" id="webTorrentRelayOnly" onchange="qBittorrent.Preferences.updateWebTorrentRelayOnly();">
+            <label for="webTorrentRelayOnly">QBT_TR(Use TURN relays only (no direct connections))QBT_TR[CONTEXT=OptionsDialog]</label>
+        </div>
+        <div class="formRow">
+            <label for="webTorrentSTUNServers">QBT_TR(STUN servers (one per line):)QBT_TR[CONTEXT=OptionsDialog]</label>
+            <textarea id="webTorrentSTUNServers" rows="3" cols="55"></textarea>
+        </div>
+        <div class="formRow">
+            <label>QBT_TR(TURN servers)QBT_TR[CONTEXT=OptionsDialog]</label>
+            <table>
+                <thead>
+                    <tr>
+                        <th>QBT_TR(Server URL)QBT_TR[CONTEXT=OptionsDialog]</th>
+                        <th>QBT_TR(Username)QBT_TR[CONTEXT=OptionsDialog]</th>
+                        <th>QBT_TR(Password)QBT_TR[CONTEXT=OptionsDialog]</th>
+                        <th>QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]</th>
+                    </tr>
+                </thead>
+                <tbody id="webTorrentTURNRows"></tbody>
+            </table>
+            <button type="button" onclick="qBittorrent.Preferences.addWebTorrentTURNRow();">QBT_TR(Add)QBT_TR[CONTEXT=OptionsDialog]</button>
+        </div>
+        <div class="formRow">
+            <span>QBT_TR(Note: The password is saved unencrypted)QBT_TR[CONTEXT=OptionsDialog]</span>
+        </div>
+    </fieldset>
+
     <fieldset class="settings">
         <legend>
             <label>QBT_TR(IP Filtering)QBT_TR[CONTEXT=OptionsDialog]</label>
@@ -1913,14 +1943,6 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                         <input type="text" id="dhtBootstrapNodes" placeholder="QBT_TR(Resets to default if empty)QBT_TR[CONTEXT=OptionsDialog]" style="width: 15em;">
                     </td>
                 </tr>
-                <tr id="rowWebTorrentSTUNServer">
-                    <td>
-                        <label for="webTorrentSTUNServer">QBT_TR(STUN server for WebTorrent NAT traversal:)QBT_TR[CONTEXT=OptionsDialog]&nbsp;<a href="https://www.libtorrent.org/reference-Settings.html#webtorrent_stun_server" target="_blank">(?)</a></label>
-                    </td>
-                    <td>
-                        <input type="text" id="webTorrentSTUNServer" style="width: 15em;">
-                    </td>
-                </tr>
                 <tr id="rowI2pInboundQuantity">
                     <td>
                         <label for="i2pInboundQuantity">QBT_TR(I2P inbound quantity:)QBT_TR[CONTEXT=OptionsDialog]&nbsp;<a href="https://www.libtorrent.org/reference-Settings.html#i2p_inbound_quantity" target="_blank">(?)</a></label>
@@ -2008,6 +2030,8 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                 updateI2PSettingsEnabled: updateI2PSettingsEnabled,
                 updatePeerProxySettings: updatePeerProxySettings,
                 updatePeerProxyAuthSettings: updatePeerProxyAuthSettings,
+                updateWebTorrentRelayOnly: updateWebTorrentRelayOnly,
+                addWebTorrentTURNRow: addWebTorrentTURNRow,
                 updateFilterSettings: updateFilterSettings,
                 updateSchedulingEnabled: updateSchedulingEnabled,
                 updateQueueingSystem: updateQueueingSystem,
@@ -2273,6 +2297,68 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             document.getElementById("proxy_misc_checkbox").disabled = (isProxyDisabled || isProxySocks4);
 
             updatePeerProxyAuthSettings();
+        };
+
+
+        const updateWebTorrentRelayOnly = () => {
+            document.getElementById("webTorrentSTUNServers").disabled =
+                document.getElementById("webTorrentRelayOnly").checked;
+        };
+
+        const addWebTorrentTURNRow = (server = "", username = "", password = "") => {
+            const row = document.getElementById("webTorrentTURNRows").insertRow();
+            for (const [value, type] of [[server, "url"], [username, "text"], [password, "password"]]) {
+                const input = document.createElement("input");
+                input.type = type;
+                input.value = value;
+                if (type === "password")
+                    input.autocomplete = "new-password";
+                if (type === "url") {
+                    input.placeholder = "turn://host:3478?transport=udp";
+                    input.style.width = "25em";
+                }
+                const cell = row.insertCell();
+                cell.append(input);
+            }
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.textContent = "QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]";
+            removeButton.addEventListener("click", () => row.remove());
+            row.insertCell().append(removeButton);
+        };
+
+        const loadWebTorrentTURNServers = (servers) => {
+            document.getElementById("webTorrentTURNRows").replaceChildren();
+            for (const line of (servers || "").split(/\\r?\\n/).filter(Boolean)) {
+                try {
+                    const url = new URL(line);
+                    const username = decodeURIComponent(url.username);
+                    const password = decodeURIComponent(url.password);
+                    url.username = "";
+                    url.password = "";
+                    addWebTorrentTURNRow(url.href, username, password);
+                }
+                catch {
+                    // Keep an invalid server visible so it can be corrected.
+                    addWebTorrentTURNRow(line);
+                }
+            }
+        };
+
+        const serializeWebTorrentTURNServers = () => {
+            const result = [];
+            for (const row of document.getElementById("webTorrentTURNRows").rows) {
+                const fields = row.querySelectorAll("input");
+                const rawURL = fields[0].value.trim();
+                if (!rawURL) continue;
+                const url = new URL(rawURL);
+                if (!["turn:", "turns:"].includes(url.protocol))
+                    throw new Error("QBT_TR(TURN server URL must use turn:// or turns://)QBT_TR[CONTEXT=OptionsDialog]");
+                url.username = fields[1].value;
+                url.password = fields[2].value;
+                result.push(url.href);
+            }
+            return result.join("\\n");
         };
 
         const updatePeerProxyAuthSettings = () => {
@@ -2952,7 +3038,10 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
                     document.getElementById("requestQueueSize").value = pref.request_queue_size;
                     document.getElementById("maxOutstandingBlockRequests").value = pref.max_outstanding_block_requests;
                     document.getElementById("dhtBootstrapNodes").value = pref.dht_bootstrap_nodes;
-                    document.getElementById("webTorrentSTUNServer").value = pref.webtorrent_stun_server;
+                    document.getElementById("webTorrentSTUNServers").value = pref.webtorrent_stun_server ?? "";
+                    document.getElementById("webTorrentRelayOnly").checked = pref.webtorrent_relay_only ?? false;
+                    loadWebTorrentTURNServers(pref.webtorrent_turn_servers);
+                    updateWebTorrentRelayOnly();
                     document.getElementById("i2pInboundQuantity").value = pref.i2p_inbound_quantity;
                     document.getElementById("i2pOutboundQuantity").value = pref.i2p_outbound_quantity;
                     document.getElementById("i2pInboundLength").value = pref.i2p_inbound_length;
@@ -3512,7 +3601,15 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             settings["request_queue_size"] = Number(document.getElementById("requestQueueSize").value);
             settings["max_outstanding_block_requests"] = Number(document.getElementById("maxOutstandingBlockRequests").value);
             settings["dht_bootstrap_nodes"] = document.getElementById("dhtBootstrapNodes").value;
-            settings["webtorrent_stun_server"] = document.getElementById("webTorrentSTUNServer").value;
+            settings["webtorrent_stun_server"] = document.getElementById("webTorrentSTUNServers").value;
+            settings["webtorrent_relay_only"] = document.getElementById("webTorrentRelayOnly").checked;
+            try {
+                settings["webtorrent_turn_servers"] = serializeWebTorrentTURNServers();
+            }
+            catch (error) {
+                alert(error.message);
+                return;
+            }
             settings["i2p_inbound_quantity"] = Number(document.getElementById("i2pInboundQuantity").value);
             settings["i2p_outbound_quantity"] = Number(document.getElementById("i2pOutboundQuantity").value);
             settings["i2p_inbound_length"] = Number(document.getElementById("i2pInboundLength").value);
@@ -3576,7 +3673,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             if (window.qBittorrent.Misc.compareVersions(libtorrentVersion, "2.1") < 0) {
                 document.getElementById("diskIOTypePreadPwrite").hidden = true;
                 document.getElementById("i2pPeXDiv").style.display = "none";
-                document.getElementById("rowWebTorrentSTUNServer").hidden = true;
+                document.getElementById("webTorrentSettings").hidden = true;
             }
 
             if ((buildInfo.platform === "linux") || (buildInfo.platform === "macos"))
