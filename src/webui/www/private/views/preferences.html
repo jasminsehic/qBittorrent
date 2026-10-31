@@ -679,12 +679,12 @@ QBT_TR((best choice if supported))QBT_TR[CONTEXT=OptionsDialog] QBT_TR(Default p
         <div class="formRow">
             <label>QBT_TR(TURN servers)QBT_TR[CONTEXT=OptionsDialog]</label>
             <div style="max-width: 100%; overflow-x: auto;">
-                <table style="width: 820px; min-width: 820px; max-width: none; table-layout: fixed;">
+                <table style="width: 780px; min-width: 780px; max-width: none; table-layout: fixed;">
                     <colgroup>
                         <col style="width: 360px;">
                         <col style="width: 180px;">
                         <col style="width: 180px;">
-                        <col style="width: 100px;">
+                        <col style="width: 60px;">
                     </colgroup>
                 <thead>
                     <tr>
@@ -2337,13 +2337,21 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             }
             const removeButton = document.createElement("button");
             removeButton.type = "button";
-            removeButton.textContent = "QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]";
+            removeButton.style.padding = "0";
+            removeButton.setAttribute("aria-label", "QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]");
+            const removeIcon = document.createElement("img");
+            removeIcon.src = "images/list-remove.svg";
+            removeIcon.alt = "QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]";
+            removeIcon.title = "QBT_TR(Remove)QBT_TR[CONTEXT=OptionsDialog]";
+            removeIcon.width = 16;
+            removeIcon.height = 16;
+            removeIcon.style.cssText = "margin: 4px; top: 2px; position: relative;";
+            removeButton.append(removeIcon);
             removeButton.addEventListener("click", (event) => {
                 event.currentTarget.closest("tr").remove();
             });
             const removeCell = row.insertCell();
             removeCell.style.whiteSpace = "nowrap";
-            removeButton.style.maxWidth = "100%";
             removeCell.append(removeButton);
         };
 
