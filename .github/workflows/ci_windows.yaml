@@ -121,12 +121,11 @@ jobs:
 
       - name: Install libtorrent
         run: |
-          git clone `
-            --branch custom-build `
-            --depth 1 `
-            --recurse-submodules `
-            https://github.com/jasminsehic/libtorrent.git `
-            ${{ env.libtorrent_path }}
+          git init "${{ env.libtorrent_path }}"
+          git -C "${{ env.libtorrent_path }}" remote add origin https://github.com/jasminsehic/libtorrent.git
+          git -C "${{ env.libtorrent_path }}" fetch --depth 1 origin e787cca4c5e32a579c7a033dfe240477e052548f
+          git -C "${{ env.libtorrent_path }}" checkout --detach FETCH_HEAD
+          git -C "${{ env.libtorrent_path }}" submodule update --init --recursive
           cd ${{ env.libtorrent_path }}
           $env:CFLAGS+=" /guard:cf"
           $env:CXXFLAGS+=" /guard:cf"
