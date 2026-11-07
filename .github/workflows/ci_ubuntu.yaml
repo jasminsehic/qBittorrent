@@ -20,21 +20,11 @@ jobs:
       fail-fast: false
       matrix:
         libtorrent:
-          - version: "2.1.2"
+          - version: "custom"
             boost_major_version: "1"
             boost_minor_version: "77"
             boost_patch_version: "0"
-            libt_build_flags: ""
-          - version: "2.0.15"
-            boost_major_version: "1"
-            boost_minor_version: "77"
-            boost_patch_version: "0"
-            libt_build_flags: ""
-          - version: "1.2.20"
-            boost_major_version: "1"
-            boost_minor_version: "77"
-            boost_patch_version: "0"
-            libt_build_flags: ""
+            libt_build_flags: "-Dwebtorrent=ON"
         qbt_gui: ["GUI=ON", "GUI=OFF"]
         qt_version: ["6.6.3"]
 
@@ -90,12 +80,11 @@ jobs:
 
       - name: Install libtorrent
         run: |
-          git clone \
-            --branch v${{ matrix.libtorrent.version }} \
-            --depth 1 \
-            --recurse-submodules \
-            https://github.com/arvidn/libtorrent.git \
-            ${{ env.libtorrent_path }}
+          git init "${{ env.libtorrent_path }}"
+          git -C "${{ env.libtorrent_path }}" remote add origin https://github.com/jasminsehic/libtorrent.git
+          git -C "${{ env.libtorrent_path }}" fetch --depth 1 origin 0bc49658f973321a515f73bee9b104688f3e481b
+          git -C "${{ env.libtorrent_path }}" checkout --detach FETCH_HEAD
+          git -C "${{ env.libtorrent_path }}" submodule update --init --recursive
           cd ${{ env.libtorrent_path }}
           CFLAGS="$CFLAGS ${{ env.harden_flags }}" \
           CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }}" \
@@ -123,7 +112,7 @@ jobs:
       - name: Build qBittorrent
         run: |
           CFLAGS="$CFLAGS ${{ env.harden_flags }}" \
-          CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }} -DQT_FORCE_ASSERTS -Werror" \
+          CXXFLAGS="$CXXFLAGS ${{ env.harden_flags }} -DQT_FORCE_ASSERTS -Werror -Wno-error=bidi-chars" \
           LDFLAGS="$LDFLAGS -gz" \
           cmake \
             -B build \
@@ -200,9 +189,10 @@ jobs:
 
       - name: Package AppImage
         run: |
-          rm -f \
-            "$QT_PLUGIN_PATH/sqldrivers/libqsqlmimer.so" \
-            "$QT_PLUGIN_PATH/sqldrivers/libqsqlmysql.so"
+          # Only SQLite is required; skip database plugins that can depend on
+          # MySQL client libraries absent from the Ubuntu runner.
+          rm -f "$QT_PLUGIN_PATH/sqldrivers/libqsqlmimer.so"
+          rm -f "$QT_PLUGIN_PATH/sqldrivers/libqsqlmysql.so"
           ./linuxdeploy-x86_64.AppImage --appdir qbittorrent --plugin qt
           mkdir -p qbittorrent/apprun-hooks
           rm -f qbittorrent/apprun-hooks/*

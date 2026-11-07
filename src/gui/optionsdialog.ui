@@ -2351,6 +2351,96 @@ readme[0-9].txt: filter 'readme1.txt', 'readme2.txt' but not 'readme10.txt'.</st
              </widget>
             </item>
             <item>
+             <widget class="QGroupBox" name="groupWebTorrent">
+              <property name="title">
+               <string>WebTorrent</string>
+              </property>
+              <layout class="QVBoxLayout" name="layoutWebTorrent">
+               <item>
+                <widget class="QLabel" name="labelWebTorrentSTUN">
+                 <property name="text">
+                  <string>STUN servers (one per line):</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPlainTextEdit" name="editWebTorrentSTUNServers">
+                 <property name="maximumHeight">
+                  <number>72</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="labelWebTorrentTURN">
+                 <property name="text">
+                  <string>TURN servers</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTableWidget" name="tableWebTorrentTURN">
+                 <property name="minimumHeight">
+                  <number>110</number>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+                 </property>
+                 <attribute name="verticalHeaderVisible">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Server URL</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Username</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Password</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="layoutWebTorrentTURNButtons">
+                 <item>
+                  <widget class="QPushButton" name="addWebTorrentTURNButton">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="removeWebTorrentTURNButton">
+                   <property name="text">
+                    <string>Remove</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QLabel" name="labelWebTorrentSecretWarning">
+                 <property name="text">
+                  <string>Note: The password is saved unencrypted</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="checkWebTorrentRelayOnly">
+                 <property name="text">
+                  <string>Use TURN relays only (no direct connections)</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
              <widget class="QGroupBox" name="groupIPFilter">
               <property name="title">
                <string>IP Fi&amp;ltering</string>

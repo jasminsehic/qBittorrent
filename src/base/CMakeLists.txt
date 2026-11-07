@@ -236,6 +236,10 @@ add_library(qbt_base STATIC
 )
 
 target_link_libraries(qbt_base
+    PRIVATE
+        # find whatever zlib target that exists while being compatible with both
+        # FindZLIB (from cmake) and zlib own scripts
+        $<IF:$<TARGET_EXISTS:ZLIB::ZLIB>,ZLIB::ZLIB,ZLIB::ZLIBSTATIC>
     PUBLIC
         LibtorrentRasterbar::torrent-rasterbar
         Qt::Core
@@ -245,11 +249,11 @@ target_link_libraries(qbt_base
         Qt::Xml
         qbt_common_cfg
     PRIVATE
-        OpenSSL::Crypto
+        # Keep OpenSSL after static libtorrent in consumer link lines. In
+        # WebTorrent-enabled builds, libtorrent's random.cpp calls RAND_bytes.
+        # Placing libcrypto before libtorrent can fail with --as-needed.
         OpenSSL::SSL
-        # find whatever zlib target that exists while being compatible with both
-        # FindZLIB (from cmake) and zlib own scripts
-        $<IF:$<TARGET_EXISTS:ZLIB::ZLIB>,ZLIB::ZLIB,ZLIB::ZLIBSTATIC>
+        OpenSSL::Crypto
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")

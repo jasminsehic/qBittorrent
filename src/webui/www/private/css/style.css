@@ -583,6 +583,40 @@ div.formRow {
     display: block;
 }
 
+/* TURN inputs must share the STUN field's width without table intrinsic sizing. */
+#webTorrentTURNTable {
+    border-spacing: 0;
+    display: block;
+    width: 100%;
+}
+
+#webTorrentTURNTable thead,
+#webTorrentTURNTable tbody {
+    display: block;
+}
+
+#webTorrentTURNTable tr {
+    column-gap: 3px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) 32px;
+}
+
+#webTorrentTURNTable td,
+#webTorrentTURNTable th {
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 0;
+}
+
+#webTorrentTURNTable th {
+    text-align: left;
+}
+
+#webTorrentTURNTable td:last-child {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .filterTitle {
     cursor: pointer;
     display: flex;
