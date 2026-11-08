@@ -115,6 +115,7 @@ let showDownloadPage = () => {};
 let globalLimitFN = () => {};
 let uploadLimitFN = () => {};
 let shareRatioFN = () => {};
+let peerDiscoveryOptionsFN = () => {};
 let toggleSequentialDownloadFN = () => {};
 let toggleFirstLastPiecePrioFN = () => {};
 let setSuperSeedingFN = () => {};
@@ -414,6 +415,29 @@ const initializeWindows = () => {
             paddingHorizontal: 0,
             width: window.qBittorrent.Dialog.limitWidthToViewport(500),
             height: 250
+        });
+    };
+
+    peerDiscoveryOptionsFN = () => {
+        const hashes = torrentsTable.selectedRowsIds();
+        if (hashes.length !== 1)
+            return;
+
+        const id = "peerDiscoveryOptionsPage";
+        new MochaUI.Window({
+            id: id,
+            icon: "images/qbittorrent-tray.svg",
+            title: "QBT_TR(Peer discovery options)QBT_TR[CONTEXT=TorrentOptionsDialog]",
+            data: { hash: hashes[0] },
+            loadMethod: "xhr",
+            contentURL: "views/peerdiscoveryoptions.html?v=${CACHEID}",
+            scrollbars: false,
+            maximizable: false,
+            width: loadWindowWidth(id, 440),
+            height: loadWindowHeight(id, 225),
+            onResize: window.qBittorrent.Misc.createDebounceHandler(500, (e) => {
+                saveWindowSize(id);
+            })
         });
     };
 

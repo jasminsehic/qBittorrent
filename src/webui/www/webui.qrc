@@ -418,6 +418,7 @@
         <file>private/scripts/search.js</file>
         <file>private/scripts/statistics.js</file>
         <file>private/scripts/torrent-content.js</file>
+        <file>private/scripts/peerdiscoveryoptions.js</file>
         <file>private/setlocation.html</file>
         <file>private/shareratio.html</file>
         <file>private/speedlimit.html</file>
@@ -445,6 +446,7 @@
         <file>private/views/searchplugins.html</file>
         <file>private/views/statistics.html</file>
         <file>private/views/torrentcreator.html</file>
+        <file>private/views/peerdiscoveryoptions.html</file>
         <file>private/views/transferlist.html</file>
         <file>public/css/login.css</file>
         <file>public/css/noscript.css</file>

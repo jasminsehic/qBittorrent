@@ -133,6 +133,9 @@ const QString KEY_PROP_SSL_CERTIFICATE = u"ssl_certificate"_s;
 const QString KEY_PROP_SSL_PRIVATEKEY = u"ssl_private_key"_s;
 const QString KEY_PROP_SSL_DHPARAMS = u"ssl_dh_params"_s;
 const QString KEY_PROP_HAS_METADATA = u"has_metadata"_s;
+const QString KEY_PROP_DISABLE_DHT = u"disable_dht"_s;
+const QString KEY_PROP_DISABLE_PEX = u"disable_pex"_s;
+const QString KEY_PROP_DISABLE_LSD = u"disable_lsd"_s;
 const QString KEY_PROP_PROGRESS = u"progress"_s;
 const QString KEY_PROP_FILES = u"files"_s;
 const QString KEY_PROP_TRACKERS = u"trackers"_s;
@@ -871,7 +874,10 @@ void TorrentsController::propertiesAction()
         {KEY_PROP_DOWNLOAD_PATH, torrent->downloadPath().toString()},
         {KEY_PROP_COMMENT, torrent->comment()},
         {KEY_PROP_HAS_METADATA, torrent->hasMetadata()},
-        {KEY_PROP_PROGRESS, torrent->progress()}
+        {KEY_PROP_PROGRESS, torrent->progress()},
+        {KEY_PROP_DISABLE_DHT, torrent->isDHTDisabled()},
+        {KEY_PROP_DISABLE_PEX, torrent->isPEXDisabled()},
+        {KEY_PROP_DISABLE_LSD, torrent->isLSDDisabled()}
     };
 
     setResult(ret);
@@ -1642,6 +1648,47 @@ void TorrentsController::setShareLimitsAction()
     applyToTorrents(hashes, [shareLimits](BitTorrent::Torrent *const torrent)
     {
         torrent->setShareLimits(shareLimits);
+    });
+
+    setResult(QString());
+}
+
+void TorrentsController::setPeerDiscoveryOptionsAction()
+{
+    requireParams({u"hashes"_s});
+
+    const auto getBoolean = [this](const QString &name) -> std::optional<bool>
+    {
+        const std::optional<QString> value = Utils::Dict::get(params(), name);
+        if (!value)
+            return std::nullopt;
+
+        const std::optional<bool> result = parseBool(*value);
+        if (!result)
+            throw APIError(APIErrorType::BadParams, tr("'%1' parameter has invalid value").arg(name));
+
+        return result;
+    };
+
+    const std::optional<bool> disableDHT = getBoolean(u"disableDHT"_s);
+    const std::optional<bool> disablePEX = getBoolean(u"disablePEX"_s);
+    const std::optional<bool> disableLSD = getBoolean(u"disableLSD"_s);
+    if (!disableDHT && !disablePEX && !disableLSD)
+        throw APIError(APIErrorType::BadParams);
+
+    const QStringList hashes {params()[u"hashes"_s].split(u'|')};
+    applyToTorrents(hashes, [=](BitTorrent::Torrent *const torrent)
+    {
+        if (!torrent->isPrivate())
+        {
+            if (disableDHT)
+                torrent->setDHTDisabled(*disableDHT);
+            if (disablePEX)
+                torrent->setPEXDisabled(*disablePEX);
+            if (disableLSD)
+                torrent->setLSDDisabled(*disableLSD);
+        }
+
     });
 
     setResult(QString());

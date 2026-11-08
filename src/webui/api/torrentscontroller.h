@@ -98,6 +98,7 @@ private slots:
     void setUploadLimitAction();
     void setDownloadLimitAction();
     void setShareLimitsAction();
+    void setPeerDiscoveryOptionsAction();
     void increasePrioAction();
     void decreasePrioAction();
     void topPrioAction();

@@ -399,6 +399,8 @@ window.qBittorrent.ContextMenu ??= (() => {
             }
 
             // hide renameFiles when more than 1 torrent is selected
+            this.setEnabled("peerDiscoveryOptions", selectedRows.length === 1);
+
             if (selectedRows.length === 1) {
                 const data = torrentsTable.getRow(selectedRows[0]).full_data;
                 const metadata_downloaded = !((data["state"] === "metaDL") || (data["state"] === "forcedMetaDL") || (data["total_size"] === -1));
