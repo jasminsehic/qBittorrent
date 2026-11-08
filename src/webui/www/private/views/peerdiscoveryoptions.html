@@ -1,0 +1,23 @@
+<fieldset class="settings">
+    <legend>QBT_TR(Peer discovery)QBT_TR[CONTEXT=TorrentOptionsDialog]</legend>
+    <div class="formRow">
+        <input type="checkbox" id="peerDiscoveryDisableDHT">
+        <label for="peerDiscoveryDisableDHT">QBT_TR(Disable DHT for this torrent)QBT_TR[CONTEXT=TorrentOptionsDialog]</label>
+    </div>
+    <div class="formRow">
+        <input type="checkbox" id="peerDiscoveryDisablePEX">
+        <label for="peerDiscoveryDisablePEX">QBT_TR(Disable PeX for this torrent)QBT_TR[CONTEXT=TorrentOptionsDialog]</label>
+    </div>
+    <div class="formRow">
+        <input type="checkbox" id="peerDiscoveryDisableLSD">
+        <label for="peerDiscoveryDisableLSD">QBT_TR(Disable LSD for this torrent)QBT_TR[CONTEXT=TorrentOptionsDialog]</label>
+    </div>
+</fieldset>
+<div style="text-align: right; margin-top: 10px;">
+    <input type="button" id="peerDiscoverySave" value="QBT_TR(Save)QBT_TR[CONTEXT=HttpServer]" disabled>
+    <input type="button" id="peerDiscoveryCancel" value="QBT_TR(Cancel)QBT_TR[CONTEXT=MainWindow]">
+</div>
+
+<script>
+    window.qBittorrent.PeerDiscoveryOptions.init();
+</script>
