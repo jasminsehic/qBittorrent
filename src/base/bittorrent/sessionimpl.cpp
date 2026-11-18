@@ -1991,7 +1991,11 @@ lt::settings_pack SessionImpl::loadLTSettings() const
         | lt::alert::port_mapping_notification
         | lt::alert::status_notification
         | lt::alert::storage_notification
-        | lt::alert::tracker_notification;
+        | lt::alert::tracker_notification
+#ifndef TORRENT_DISABLE_LOGGING
+        | lt::alert::session_log_notification
+#endif
+        ;
     settingsPack.set_int(lt::settings_pack::alert_mask, alertMask);
 
     settingsPack.set_int(lt::settings_pack::connection_speed, connectionSpeed());
@@ -2096,6 +2100,14 @@ lt::settings_pack SessionImpl::loadLTSettings() const
         settingsPack.set_bool(lt::settings_pack::proxy_peer_connections, isProxyPeerConnectionsEnabled());
         settingsPack.set_bool(lt::settings_pack::proxy_hostnames, proxyConfig.hostnameLookupEnabled);
     }
+
+#ifndef TORRENT_DISABLE_LOGGING
+    LogMsg(u"RTC_PROXY_TRACE QBT_CONFIG proxy_type=%1 proxy_for_bt=%2 proxy_for_peers=%3 remote_dns=%4"_s
+        .arg(settingsPack.get_int(lt::settings_pack::proxy_type))
+        .arg(int(Preferences::instance()->useProxyForBT()))
+        .arg(int(isProxyPeerConnectionsEnabled()))
+        .arg(int(proxyConfig.hostnameLookupEnabled)), Log::INFO);
+#endif
 
     settingsPack.set_bool(lt::settings_pack::announce_to_all_trackers, announceToAllTrackers());
     settingsPack.set_bool(lt::settings_pack::announce_to_all_tiers, announceToAllTiers());
@@ -6166,6 +6178,16 @@ void SessionImpl::handleAlert(lt::alert *alert)
     {
         switch (alert->type())
         {
+#ifndef TORRENT_DISABLE_LOGGING
+        case lt::log_alert::alert_type:
+        {
+            const QString message = QString::fromUtf8(
+                static_cast<const lt::log_alert *>(alert)->log_message());
+            if (message.startsWith(u"WS_PROXY_TRACE "_s) || message.contains(u"RTC_PROXY_TRACE "_s))
+                LogMsg(u"LIBTORRENT "_s + message, Log::INFO);
+            break;
+        }
+#endif
 #ifdef QBT_USES_LIBTORRENT2
         case lt::file_prio_alert::alert_type:
             handleFilePrioAlert(static_cast<const lt::file_prio_alert *>(alert));
