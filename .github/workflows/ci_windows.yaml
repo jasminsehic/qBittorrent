@@ -19,24 +19,12 @@ jobs:
       fail-fast: false
       matrix:
         libtorrent:
-          - version: "2.1.2"
+          - version: "pr46"
             boost_major_version: "1"
             boost_minor_version: "91"
             boost_patch_version: "0"
             boost_sha256: "5734305f40a76c30f951c9abd409a45a2a19fb546efe4162119250bbe4d3a463"
-            libt_build_flags: ""
-          - version: "2.0.15"
-            boost_major_version: "1"
-            boost_minor_version: "91"
-            boost_patch_version: "0"
-            boost_sha256: "5734305f40a76c30f951c9abd409a45a2a19fb546efe4162119250bbe4d3a463"
-            libt_build_flags: ""
-          - version: "1.2.20"
-            boost_major_version: "1"
-            boost_minor_version: "86"
-            boost_patch_version: "0"
-            boost_sha256: "2575e74ffc3ef1cd0babac2c1ee8bdb5782a0ee672b1912da40e5b4b591ca01f"
-            libt_build_flags: ""
+            libt_build_flags: "-Dwebtorrent=ON"
         config:
         - os: windows-latest
           arch: x64
@@ -137,12 +125,11 @@ jobs:
 
       - name: Install libtorrent
         run: |
-          git clone `
-            --branch v${{ matrix.libtorrent.version }} `
-            --depth 1 `
-            --recurse-submodules `
-            https://github.com/arvidn/libtorrent.git `
-            ${{ env.libtorrent_path }}
+          git init "${{ env.libtorrent_path }}"
+          git -C "${{ env.libtorrent_path }}" remote add origin https://github.com/jasminsehic/libtorrent.git
+          git -C "${{ env.libtorrent_path }}" fetch --depth 1 origin 0127e768ebe010cec7e323d07c62ae78ab682264
+          git -C "${{ env.libtorrent_path }}" checkout --detach FETCH_HEAD
+          git -C "${{ env.libtorrent_path }}" submodule update --init --recursive
           cd ${{ env.libtorrent_path }}
           $env:CFLAGS+=" /guard:cf"
           $env:CXXFLAGS+=" /guard:cf"
