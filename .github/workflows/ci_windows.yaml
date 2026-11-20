@@ -127,7 +127,7 @@ jobs:
         run: |
           git init "${{ env.libtorrent_path }}"
           git -C "${{ env.libtorrent_path }}" remote add origin https://github.com/jasminsehic/libtorrent.git
-          git -C "${{ env.libtorrent_path }}" fetch --depth 1 origin 0c90080b34086adcc901e2d2f0a58e99a862dfe8
+          git -C "${{ env.libtorrent_path }}" fetch --depth 1 origin b4af3ebcc84755a64ab1b781b1d5246bfe7a03f2
           git -C "${{ env.libtorrent_path }}" checkout --detach FETCH_HEAD
           git -C "${{ env.libtorrent_path }}" submodule update --init --recursive
           cd ${{ env.libtorrent_path }}
