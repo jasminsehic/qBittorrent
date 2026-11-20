@@ -49,7 +49,6 @@
 #include <libtorrent/address.hpp>
 #include <libtorrent/alert_types.hpp>
 #include <libtorrent/error_code.hpp>
-#include <libtorrent/extensions/smart_ban.hpp>
 #include <libtorrent/extensions/ut_metadata.hpp>
 #include <libtorrent/extensions/ut_pex.hpp>
 #include <libtorrent/ip_filter.hpp>
@@ -1886,7 +1885,6 @@ void SessionImpl::initializeNativeSession()
     });
 
     // Enabling plugins
-    m_nativeSession->add_extension(&lt::create_smart_ban_plugin);
     m_nativeSession->add_extension(&lt::create_ut_metadata_plugin);
     if (isPeXEnabled())
         m_nativeSession->add_extension(&lt::create_ut_pex_plugin);
