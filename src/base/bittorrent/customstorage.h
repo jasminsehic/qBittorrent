@@ -67,7 +67,7 @@ public:
     void remove_torrent(lt::storage_index_t storageIndex) override;
     void async_read(lt::storage_index_t storageIndex, const lt::peer_request &peerRequest
                     , std::function<void (lt::disk_buffer_holder, const lt::storage_error &)> handler
-                    , lt::disk_job_flags_t flags) override;
+                    , lt::disk_job_flags_t flags, lt::read_ahead_hint readAhead) override;
     bool async_write(lt::storage_index_t storageIndex, const lt::peer_request &peerRequest
                      , const char *buf, std::shared_ptr<lt::disk_observer> diskObserver
                      , std::function<void (const lt::storage_error &)> handler, lt::disk_job_flags_t flags) override;
@@ -80,7 +80,7 @@ public:
     void async_release_files(lt::storage_index_t storage, std::function<void ()> handler) override;
     void async_check_files(lt::storage_index_t storage, const lt::add_torrent_params *resume_data
                            , lt::aux::vector<std::string, lt::file_index_t> links
-                           , std::function<void (lt::status_t, const lt::storage_error &)> handler) override;
+                           , std::function<void (lt::status_t, const lt::storage_error &, lt::typed_bitfield<lt::piece_index_t>)> handler) override;
     void async_stop_torrent(lt::storage_index_t storage, std::function<void ()> handler) override;
     void async_rename_file(lt::storage_index_t storage, lt::file_index_t index, std::string name
                            , std::function<void (const std::string &, lt::file_index_t, const lt::storage_error &)> handler) override;

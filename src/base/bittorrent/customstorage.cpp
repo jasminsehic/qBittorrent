@@ -96,9 +96,9 @@ void CustomDiskIOThread::remove_torrent(lt::storage_index_t storage)
 
 void CustomDiskIOThread::async_read(lt::storage_index_t storage, const lt::peer_request &peerRequest
                                     , std::function<void (lt::disk_buffer_holder, const lt::storage_error &)> handler
-                                    , lt::disk_job_flags_t flags)
+                                    , lt::disk_job_flags_t flags, lt::read_ahead_hint readAhead)
 {
-    m_nativeDiskIO->async_read(storage, peerRequest, std::move(handler), flags);
+    m_nativeDiskIO->async_read(storage, peerRequest, std::move(handler), flags, readAhead);
 }
 
 bool CustomDiskIOThread::async_write(lt::storage_index_t storage, const lt::peer_request &peerRequest
@@ -151,7 +151,7 @@ void CustomDiskIOThread::async_release_files(lt::storage_index_t storage, std::f
 
 void CustomDiskIOThread::async_check_files(lt::storage_index_t storage, const lt::add_torrent_params *resume_data
                                            , lt::aux::vector<std::string, lt::file_index_t> links
-                                           , std::function<void (lt::status_t, const lt::storage_error &)> handler)
+                                           , std::function<void (lt::status_t, const lt::storage_error &, lt::typed_bitfield<lt::piece_index_t>)> handler)
 {
     handleCompleteFiles(storage, m_storageData[storage].savePath);
     m_nativeDiskIO->async_check_files(storage, resume_data, std::move(links), std::move(handler));
